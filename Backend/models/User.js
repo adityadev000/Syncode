@@ -56,6 +56,9 @@ const userSchema = new mongoose.Schema({
             ref:"Project"
         }
     ],
+    resetPasswordExpires : {
+        type : Date , 
+    } ,
     createdAt: {
         type: Date,
         default: Date.now,
