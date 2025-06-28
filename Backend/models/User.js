@@ -1,6 +1,16 @@
 const mongoose = require("mongoose") ; 
 
 const userSchema = new mongoose.Schema({
+    firstName : {
+        type : String , 
+        required : true , 
+        trim: true,
+    },
+    lastName : {
+        type : String , 
+        required : true , 
+        trim: true,
+    },
     userName : {
         type : String , 
         required : true , 
@@ -26,7 +36,12 @@ const userSchema = new mongoose.Schema({
     bio : {
         type: String,
         maxlength: 300,
-        default : "" ,
+        default : null ,
+        
+    },
+    gender : {
+        type: String,
+        default : null ,
         
     },
     projectCreated: [
