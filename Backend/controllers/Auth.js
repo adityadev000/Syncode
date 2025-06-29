@@ -123,11 +123,10 @@ exports.signup = async (req ,res) => {
         const user = await User.create({
             firstName , 
             lastName , 
-            username ,
+            userName : username ,
             email ,
             password : hashedPassword , 
             avtarUrl : `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`,
-            
         })
 
         return res.status(200).json({

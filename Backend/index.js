@@ -2,7 +2,9 @@ const express = require("express") ;
 const app = express();
 const dotenv = require("dotenv") ;
 const cors = require("cors") ;
-const database = require("./config/database")
+const database = require("./config/database") ; 
+const userRoutes = require("./routes/User") ; 
+const cookieParser = require("cookie-parser") ; 
 
 
 dotenv.config() ; 
@@ -13,6 +15,14 @@ database.connect() ;
 
 //middleware
 app.use(express.json()) ; 
+app.use(cookieParser()) ;
+app.use(
+    cors({
+        origin : "http://localhost:3000" , 
+        credentials : true , 
+    })
+)
+app.use("/api/v1/user" , userRoutes) ;
 
 
 //default route

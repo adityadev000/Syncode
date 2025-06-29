@@ -30,7 +30,7 @@ const LoginPage = () => {
             const result = await login(data) ; 
 
             if(result !== null ){
-                dispatch(setToken(reset.token)) ; 
+                dispatch(setToken(result.token)) ; 
                 dispatch(setUser(result)) ; 
                 navigate("/dashboard/my-profile")
             }
@@ -47,7 +47,7 @@ const LoginPage = () => {
         }
     } , [isSubmitSuccessful , reset ] )
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-950 text-white px-4">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white px-4">
             <form onSubmit={handleSubmit(loginHandler)} className="bg-gray-900 p-8 rounded-lg shadow-lg w-full max-w-md">
                 <h2 className="text-2xl font-bold mb-6 text-center">Login to Syncode</h2>
 
@@ -98,8 +98,8 @@ const LoginPage = () => {
                     Login
                 </button>
             </form>
-            <div className=' flex gap-5'>
-                <Link  className=' hover:text-blue-400 transition-all duration-200'>Forgot Password? </Link>
+            <div className=' w-full  max-w-md  px-8 text-gray-300 flex justify-between '>
+                <Link to='/reset-password'  className=' hover:text-blue-400 transition-all duration-200'>Forgot Password? </Link>
                 <Link to='/signup' className=' hover:text-blue-400 transition-all duration-200'>Create Account </Link>
             </div>
         </div>

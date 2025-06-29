@@ -19,7 +19,7 @@ exports.resetPasswordToken = async (req ,res) => {
 
         const updatedUser = await User.findOneAndUpdate({email} , {
             token : token , 
-            resetPasswordExpires : Date.now + 5* 60 *1000 ,
+            resetPasswordExpires : Date.now() + 5* 60 *1000 ,
         } , {new : true })  ; 
 
         const url= process.env.UPDATEPASSWORD_URL + token ; 
@@ -53,25 +53,32 @@ exports.resetPassword = async (req ,res) => {
             })
         }
 
+        console.log("password same passed")
+        
+        
         const user = await User.findOne({token}) ; 
-
+        
         if(!user){
             return res.status(200).json({
                 success : false , 
                 message : 'Token is Invalid', 
             })
         }
+        console.log("user matched passed" , user ) ; 
 
-        if(user.resetPasswordExpires < Date.now ){
+        if(user.resetPasswordExpires < Date.now() ){
             return res.status(200).json({
                 success : false , 
                 message : 'Token is expired please regenerate', 
             })
         }
-
-        const hashedPassword = bcrypt.hash(password , 10 ) ; 
-
+        console.log("token is valid " ) ;
+        
+        const hashedPassword = await bcrypt.hash(password , 10 ) ; 
+        
         await User.findOneAndUpdate({token} , {password : hashedPassword} , {new :true }) ; 
+        
+        console.log("pasword saved " ) ;
 
         return res.status(200).json({
             success : true , 

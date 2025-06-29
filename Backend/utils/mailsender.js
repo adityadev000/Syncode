@@ -11,7 +11,7 @@ const mailsender = async(email , title , body ) => {
             }
         })
 
-        let info = transporter.sendMail({
+        let info = await transporter.sendMail({
             from : 'Syncode || Sync + Code — for real-time collaboration',
             to : `${email}` , 
             subject : `${title}` ,

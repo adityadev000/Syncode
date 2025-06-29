@@ -15,6 +15,7 @@ catch (err) {
 const initialState = {
     user : storedUser , 
     userLoading : false , 
+    signupData : null , 
 };
 
 const UserSlice = createSlice({
@@ -30,11 +31,14 @@ const UserSlice = createSlice({
                 localStorage.setItem("user" , JSON.stringify(action.payload)) ; 
             }
         },
+        setSignupData(state , action){
+            state.signupData = action.payload
+        },
         setUserLoading (state , action){
             state.userLoading = action.payload ; 
         }
     }
 })
 
-export const {setUser , setUserLoading} = UserSlice.actions ; 
+export const {setUser , setUserLoading , setSignupData} = UserSlice.actions ; 
 export default UserSlice.reducer ;

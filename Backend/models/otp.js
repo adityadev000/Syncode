@@ -31,7 +31,7 @@ const sendVerificationEmail = async(email , otp )=> {
     }
 }
 
-otpSchema.pre("save" , async (next) => {
+otpSchema.pre("save" , async function (next)  {
     await sendVerificationEmail(this.email , this.otp) ; 
     next() ; 
 })
