@@ -7,5 +7,5 @@ export const auth = {
     RESET_PASSWORD_API : BASE_URL + "/user/resetPassword",
 }
 export const profile = {
-    CHANGE_AVTAR_API : BASE_URL + "/user/changeAvtarUrl" ,
+    CHANGE_AVTAR_API : BASE_URL + "/user/changeAvtar" ,
 }

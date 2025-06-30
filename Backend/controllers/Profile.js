@@ -1,0 +1,53 @@
+const User = require("../models/User");
+const { deleteImageToCloudinary, uploadImageToCloudinary } = require("../utils/cloudinary");
+
+exports.changeAvtar = async (req ,res) => { 
+
+    try{
+        console.log("uploading") ; 
+        const {avtar} = req.files ;
+        const userId = req.user.id ; 
+
+        console.log("avtar" , avtar) ;
+        console.log("userid" , userId) ;
+
+
+        const user = await User.findById(userId) ; 
+        const iamge_url = user.avtarUrl ; 
+
+        if(iamge_url !== "" || iamge_url !== undefined) {
+            await deleteImageToCloudinary(iamge_url) ; 
+        }
+        console.log("Deletion success") ;
+
+        const image = await uploadImageToCloudinary(
+            avtar , 
+            process.env.FOLDER_NAME , 
+            1000 ,
+            1000,
+        )
+        console.log("Upload success") ; 
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId , 
+            {avtarUrl : image.secure_url} , 
+            {new : true } 
+        )
+
+        console.log("user updated return rps") ;
+
+        return res.status(200).json({
+            success : true , 
+            message : 'Profile picture changed sucessfully',
+            user : updatedUser , 
+        })
+    }
+    catch(err){
+        console.error(err) ; 
+        return res.status(500).json({
+            success : false , 
+            message : 'failed to update dp ' , 
+            error : err.message  ,
+        })
+    }
+}

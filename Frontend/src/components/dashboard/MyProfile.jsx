@@ -52,6 +52,7 @@ const MyProfile = () => {
             setUpdate(true) ;
             setFiles(null) ;
         }
+        setLoading(false) ; 
     }
 
 

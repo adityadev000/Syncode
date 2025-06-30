@@ -5,6 +5,8 @@ const cors = require("cors") ;
 const database = require("./config/database") ; 
 const userRoutes = require("./routes/User") ; 
 const cookieParser = require("cookie-parser") ; 
+const {cloudinaryConnect} = require("./config/cloudinary") ;
+const fileUplaod = require("express-fileupload") ; 
 
 
 dotenv.config() ; 
@@ -22,6 +24,14 @@ app.use(
         credentials : true , 
     })
 )
+app.use(
+    fileUplaod({
+        useTempFiles : true , 
+        tempFileDir : "/tmp/" 
+    })
+)
+cloudinaryConnect() ;
+
 app.use("/api/v1/user" , userRoutes) ;
 
 

@@ -13,7 +13,6 @@ export async function changeAvtar(formData , token) {
     try{
         const response = await apiConnector("POST" , profile.CHANGE_AVTAR_API , formData , { 
             Authorization: `Bearer ${token}` ,
-            "Content-Type": "multipart/form-data",
         } ) ;
 
         if(!response.data.success){
