@@ -22,8 +22,7 @@ const Signup = () => {
     const dispatch = useDispatch() ; 
     const navigate = useNavigate() 
 
-    const signUpHandler = async (data , event) => {
-        event.preventDefault() ;
+    const signUpHandler = async (data) => {
         console.log("SIGNUP DATA..." , signupData) ; 
         if (data.password !== data.confirmPassword) {
             toast.error('Passwords do not match');

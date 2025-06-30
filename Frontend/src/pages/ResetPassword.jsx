@@ -23,7 +23,7 @@ const ResetPassword = () => {
         setLoading(false) ; 
     }
     return (
-        loading ? (<div className='h-screen w-screen flex justify-center items-center  bg-richblack-900'><Spinner/></div>) 
+        loading ? (<Spinner/>) 
         : 
         (
             sent ? (

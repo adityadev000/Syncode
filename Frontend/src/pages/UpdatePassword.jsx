@@ -33,7 +33,7 @@ const UpdatePassword = () => {
     } 
 
     return (
-        loading ? (<div className='h-screen w-screen flex justify-center items-center  bg-richblack-900'><Spinner/></div>) : (
+        loading ? (<Spinner/>) : (
             <div className=" w-screen  h-screen bg-gray-900 flex justify-center items-center text-white">
             <div className=' flex flex-col min-w-[320px]  w-[40%] my-auto'>
 

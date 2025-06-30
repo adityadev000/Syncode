@@ -3,15 +3,15 @@ import { useForm } from 'react-hook-form';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { FiEye ,FiEyeOff} from "react-icons/fi";
 import { login } from '../services/operarions/authApis';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setToken } from '../slices/authSlice'
-import { setUser } from '../slices/userSlice'
+import { setUser, setUserLoading } from '../slices/userSlice'
+import Spinner from '../components/common/Spinner' ; 
 
 const LoginPage = () => {
 
     const [loading ,setLoading] = useState(false) ; 
     const [visible , setVisible] = useState(false) ; 
-
     const dispatch = useDispatch() ; 
     const navigate = useNavigate() ; 
 
@@ -22,11 +22,13 @@ const LoginPage = () => {
         formState : {errors , isSubmitSuccessful} 
     } = useForm() ; 
 
-    const loginHandler = async(data , event ) => {
-
+    const loginHandler = async(data ) => {
+        if(loading){
+            return ; 
+        }
+        setLoading(true) ;
+        dispatch(setUserLoading(true)) ; 
         try{
-            event.preventDefault() ;
-            setLoading(true) ;
             const result = await login(data) ; 
 
             if(result !== null ){
@@ -40,6 +42,8 @@ const LoginPage = () => {
         }
 
         setLoading(false) ; 
+        dispatch(setUserLoading(false) ) ; 
+
     }
     useEffect(() => {
         if(isSubmitSuccessful){
@@ -47,8 +51,10 @@ const LoginPage = () => {
         }
     } , [isSubmitSuccessful , reset ] )
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white px-4">
-            <form onSubmit={handleSubmit(loginHandler)} className="bg-gray-900 p-8 rounded-lg shadow-lg w-full max-w-md">
+        loading ? (<Spinner/>) : 
+        (<div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white px-4">
+            <form onSubmit={handleSubmit(loginHandler)} 
+                className="bg-gray-900 p-8 rounded-lg shadow-lg w-full max-w-md">
                 <h2 className="text-2xl font-bold mb-6 text-center">Login to Syncode</h2>
 
                 <div className="mb-4">
@@ -93,16 +99,17 @@ const LoginPage = () => {
 
                 <button
                 type="submit"
+                disabled={loading}
                 className="w-full bg-blue-600 hover:bg-blue-700 transition py-2 rounded-md font-medium"
                 >
-                    Login
+                    {loading ? "Logging in..." : "Login"}
                 </button>
             </form>
             <div className=' w-full  max-w-md  px-8 text-gray-300 flex justify-between '>
                 <Link to='/reset-password'  className=' hover:text-blue-400 transition-all duration-200'>Forgot Password? </Link>
                 <Link to='/signup' className=' hover:text-blue-400 transition-all duration-200'>Create Account </Link>
             </div>
-        </div>
+        </div>)
     );
 };
 

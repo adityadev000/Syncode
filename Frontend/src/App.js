@@ -9,6 +9,11 @@ import Error from "./pages/Error";
 import UpdatePassword from "./pages/UpdatePassword";
 import ResetPassword from "./pages/ResetPassword";
 import OpenRoute from "./components/auth/OpenRoute";
+import PrivateRoute from "./components/auth/PrivateRoute";
+import Dashboard from "./pages/Dashboard";
+import MyProfile from "./components/dashboard/MyProfile";
+import MyProjects from "./components/dashboard/MyProjects";
+import ProjectCollab from "./components/dashboard/ProjectCollab";
 
 function App() {
   return (
@@ -22,6 +27,12 @@ function App() {
 
         <Route path="/reset-password" element={<OpenRoute><ResetPassword/></OpenRoute>} />
         <Route path="/update-password/:token" element={<OpenRoute><UpdatePassword/></OpenRoute>} />
+
+        <Route path="" element={<PrivateRoute><Dashboard/></PrivateRoute>}>
+          <Route path="/dashboard/my-profile" element={<MyProfile/>}/>
+          <Route path="/dashboard/my-projects" element={<MyProjects/>}/>
+          <Route path="/dashboard/projects-collab" element={<ProjectCollab/>}/>
+        </Route>
 
 
         <Route path="*"  element={<Error/>} />
