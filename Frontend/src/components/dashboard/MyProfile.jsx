@@ -1,11 +1,11 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import ProfileField from './ProfileField';
 import ProfileGender from './ProfileGender';
 import { useDispatch, useSelector } from 'react-redux';
 import { MdOutlineFileUpload } from 'react-icons/md';
 import { setUser } from '../../slices/userSlice';
 import toast from "react-hot-toast";
-import { changeAvtar } from '../../services/operarions/profileApis';
+import { changeAvtar, getUserDetail } from '../../services/operarions/profileApis';
 
 const MyProfile = () => {
 
@@ -18,7 +18,6 @@ const MyProfile = () => {
     const [files, setFiles] = useState(null);
     const[loading ,setLoading] = useState(false) ; 
     const [update , setUpdate ] = useState(false) ; 
-    const [isEditable, setIsEditable] = useState(false);
 
     function clickhandler() {
         fileInputRef.current.click() ; 
@@ -54,6 +53,19 @@ const MyProfile = () => {
         }
         setLoading(false) ; 
     }
+
+    async function fetchUserDetails() {
+        const result = await getUserDetail(token) ; 
+        if(result !== null ){
+            dispatch(setUser(result)) ; 
+        }
+    }
+    useEffect(() => {
+        if(update){
+            fetchUserDetails() ; 
+            setUpdate(false) ; 
+        }
+    } ,[update] ) ; 
 
 
     return (
@@ -110,12 +122,12 @@ const MyProfile = () => {
                     </div>
                 </div>
 
-                <ProfileField label="First Name" value={user.firstName} />
-                <ProfileField label="Last Name" value={user.lastName}  />
-                <ProfileField label="Username" value={user.userName}  />
-                <ProfileField label="Email" value={user.email}  />
-                <ProfileField label="Bio" value={user.bio}  />
-                <ProfileGender value={user.gender} />
+                <ProfileField label="First Name" name='firstName' value={user.firstName} setUpdate={setUpdate}/>
+                <ProfileField label="Last Name" name='lastName' value={user.lastName} setUpdate={setUpdate} />
+                <ProfileField label="Username" name='userName' value={user.userName} setUpdate={setUpdate} />
+                <ProfileField label="Email" name='email' value={user.email} setUpdate={setUpdate} />
+                <ProfileField label="Bio" name='bio' value={user.bio} setUpdate={setUpdate} />
+                <ProfileGender value={user.gender}  setUpdate={setUpdate} />
             </div>
         </div>
     );

@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const { deleteImageToCloudinary, uploadImageToCloudinary } = require("../utils/cloudinary");
+const Project = require("../models/Project") ;
 
 exports.changeAvtar = async (req ,res) => { 
 
@@ -47,6 +48,82 @@ exports.changeAvtar = async (req ,res) => {
         return res.status(500).json({
             success : false , 
             message : 'failed to update dp ' , 
+            error : err.message  ,
+        })
+    }
+}
+
+exports.updateProfile = async (req ,res) => { 
+
+    try{
+        const {firstName , lastName , userName , bio , gender } = req.body ; 
+        const userId = req.user.id ; 
+
+        let user = await User.findById(userId) ; 
+        
+        if(firstName){
+            user.firstName = firstName ; 
+        }
+        if(lastName){
+            user.lastName = lastName ; 
+        }
+        if(userName){
+            const existingUser = await User.findOne({ userName });
+            if(existingUser){
+                return res.status(200).json({
+                    success : false , 
+                    message : 'userName already Taken', 
+                })
+            }
+            user.userName = userName ; 
+        }
+        if(bio){
+            user.bio = bio ; 
+        }
+        if(gender){
+            user.gender = gender ; 
+        }
+
+        await user.save() ; 
+
+        return res.status(200).json({
+            success : true , 
+            message : 'Profile Updated SuccessFully', 
+        })
+    }
+    catch(err){
+        console.error(err) ; 
+        return res.status(500).json({
+            success : false , 
+            message : 'ISE' , 
+            error : err.message  ,
+        })
+    }
+}
+
+
+exports.getUserDetails = async (req ,res) => { 
+
+    try{
+        const userId = req.user.id ; 
+        const user = await User.findById(userId)
+        .populate("projectCreated")
+        .populate("projectCollaborated")
+        .exec() ; 
+
+        return res.status(200).json({
+            success : true , 
+            message : 'User return Successfully',
+            user 
+        })
+
+
+    }
+    catch(err){
+        console.error(err) ; 
+        return res.status(500).json({
+            success : false , 
+            message : 'ISE' , 
             error : err.message  ,
         })
     }

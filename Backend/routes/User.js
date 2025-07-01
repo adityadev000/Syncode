@@ -15,7 +15,9 @@ const {
 } = require("../controllers/ResetPassword") ; 
 
 const {
-    changeAvtar
+    changeAvtar,
+    updateProfile,
+    getUserDetails,
 } = require('../controllers/Profile') ; 
 
 router.post("/login" , login) ; 
@@ -26,6 +28,8 @@ router.post("/resetPasswordToken" , resetPasswordToken) ;
 router.post("/resetPassword" , resetPassword) ; 
 
 router.post("/changeAvtar" ,auth ,  changeAvtar) ; 
+router.post("/updateProfile" ,auth ,  updateProfile) ; 
+router.post("/getUserDetails" ,auth ,  getUserDetails) ; 
 
 
 module.exports = router ; 

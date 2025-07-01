@@ -1,11 +1,15 @@
 import React, { useState } from 'react'
 import toast from 'react-hot-toast';
+import { updateProfile } from '../../services/operarions/profileApis';
+import { useSelector } from 'react-redux';
 
 
-const ProfileField = ({ label, value }) => {
+const ProfileField = ({ label, value ,setUpdate , name}) => {
 
     const [isEditable, setIsEditable] = useState(false);
     const [val, setValue] = useState(value);
+
+    const {token} = useSelector((state) => state.auth) ; 
 
     const onEdit = async() => {
         if(!isEditable){
@@ -15,33 +19,43 @@ const ProfileField = ({ label, value }) => {
         else{
             if(val === value ){
                 toast.error(`${label} is not changed`) ; 
+                setIsEditable(false) ; 
                 return ; 
             }
-            toast.success("API call") ; 
-            setIsEditable(false)
+            setIsEditable(false) ; 
+            const result = await updateProfile({[name] : val } , token) ; 
+
+            if(result != null ){
+                setUpdate(true) ; 
+            }
         }
-        //api call 
     }
     return( 
     <div className="mb-4  flex justify-between items-center border-b border-gray-700 pb-2">
         <div className='w-[90%] '>
             <p className="text-sm text-gray-400">{label}</p>
+            
             <input
                 type="text"
                 value={val}
                 onChange={(e) => setValue(e.target.value)}
-                readOnly={!isEditable}
-                className={` w-full  bg-transparent p-2 rounded ${isEditable ? 'bg-white' : 'bg-gray-200'}`}
+                readOnly={label === 'Email' ? true : !isEditable }
+                className={` w-full bg-transparent p-2 rounded`}
             />
         </div>
-        <button
-            onClick={onEdit}
-            className="text-blue-500 hover:underline text-sm font-medium"
-        >
-            {
-                isEditable ? 'Save' : 'Edit'
-            }
-        </button>
+        {
+            label === "Email" ? (<div></div>) : 
+            (
+                <button
+                    onClick={onEdit}
+                    className="text-blue-500 hover:underline text-sm font-medium"
+                >
+                    {
+                        isEditable ? 'Save' : 'Edit'
+                    }
+                </button>
+            )
+        }
     </div>
     )
 };

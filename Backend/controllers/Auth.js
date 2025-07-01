@@ -158,7 +158,10 @@ exports.login = async (req ,res) => {
             })
         }
 
-        const existingUser = await User.findOne({email}) ; 
+        const existingUser = await User.findOne({email})
+        .populate("projectCreated")
+        .populate("projectCollaborated")
+        .exec() ;  ; 
 
         if(!existingUser) {
             return res.status(200).json({

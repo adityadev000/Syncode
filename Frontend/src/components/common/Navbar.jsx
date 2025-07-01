@@ -2,6 +2,7 @@ import React from 'react';
 import LogoName from '../../assets/Syncode_logo_Name.png'
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import ProfileDropDown from '../dashboard/ProfileDropdown';
 
 const Navbar = () => {
 
@@ -40,7 +41,7 @@ const Navbar = () => {
                 </div>
                 ) : (
                 <div>
-                    <img src={user.avtarUrl} className='h-7'/>
+                    <ProfileDropDown/>
                 </div>
                 )
             }

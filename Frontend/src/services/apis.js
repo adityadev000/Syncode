@@ -8,4 +8,6 @@ export const auth = {
 }
 export const profile = {
     CHANGE_AVTAR_API : BASE_URL + "/user/changeAvtar" ,
+    UPDATE_PROFILE_API : BASE_URL + "/user/updateProfile" ,
+    GET_USER_DETAILS_API : BASE_URL + "/user/getUserDetails" ,
 }
