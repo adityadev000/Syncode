@@ -1,7 +1,10 @@
-import React from 'react';
+import React, {  useState } from 'react';
 import logo from '../../assets/Syncode_logo.png'
+import CreateProjectForm from './CreateProjectForm';
 
 const HeroSection = () => {
+    const [btn , setBtn] = useState(false) ; 
+
     return (
         <section className="bg-gray-900 text-white  flex flex-col items-center justify-center ">
             <img src={logo}  className='h-40'/>
@@ -12,8 +15,10 @@ const HeroSection = () => {
                 Syncode is a real-time collaborative code editor that lets you and your team work on projects simultaneously, manage files and folders, and handle merge conflicts — all in the browser.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
-            <button className="bg-blue-600 hover:bg-blue-700 transition px-6 py-3 rounded-md text-white font-medium">
-                Start Coding
+            <button 
+                onClick={() => setBtn(true) } 
+                className="bg-blue-600 hover:bg-blue-700 transition px-6 py-3 rounded-md text-white font-medium">
+                Create Project
             </button>
             <button className="bg-gray-800 hover:bg-gray-700 transition px-6 py-3 rounded-md text-white font-medium">
                 Join with Room ID
@@ -30,7 +35,13 @@ const HeroSection = () => {
                 </div>
             </label>
         </div>
+
+        {
+            btn && (<CreateProjectForm setBtn= {setBtn}/>)
+        }
         </section>
+
+
     );
 };
 

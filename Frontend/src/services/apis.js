@@ -11,3 +11,8 @@ export const profile = {
     UPDATE_PROFILE_API : BASE_URL + "/user/updateProfile" ,
     GET_USER_DETAILS_API : BASE_URL + "/user/getUserDetails" ,
 }
+export const project = {
+    GET_PROJECT_DETAILS_API : BASE_URL + "/project/getProjectDetails" ,
+    GET_FILE_CONTENT_API : BASE_URL + "/project/getFileContent" ,
+    CREATE_PROJECT_API : BASE_URL + "/project/createProject" ,
+}

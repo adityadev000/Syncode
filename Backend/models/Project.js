@@ -25,7 +25,7 @@ const projectSchema = new mongoose.Schema({
     rootPath : {
         type : String , 
         trim : true , 
-        default : "" , 
+        default : "root/" , 
     } , 
     createdAt : {
         type : Date , 
@@ -36,7 +36,13 @@ const projectSchema = new mongoose.Schema({
             type : mongoose.Schema.Types.ObjectId , 
             ref : "Folder" , 
         }
-    ]
+    ],
+    files : [
+        {
+            type : mongoose.Schema.Types.ObjectId , 
+            ref : "File" , 
+        }
+    ],
 }) ; 
 
 module.exports = mongoose.model("Project" , projectSchema ) ; 

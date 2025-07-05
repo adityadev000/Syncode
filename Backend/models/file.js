@@ -6,7 +6,15 @@ const fileSchema = new mongoose.Schema({
         required : true , 
         trim : true , 
     },
+    type : {
+        type : String , 
+        default : 'File'
+    } , 
     path : {
+        type : String , 
+        default : '' , 
+    },
+    parentFolderDirectory : {
         type : String , 
         default : '' , 
     },
@@ -14,7 +22,7 @@ const fileSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId , 
         ref: "Project" , 
     } ,
-    folderId : {
+    parentFolder : {
         type : mongoose.Schema.Types.ObjectId , 
         ref: "Folder" , 
     },

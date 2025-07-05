@@ -1,0 +1,79 @@
+import toast from "react-hot-toast";
+import { apiConnector } from "../apiconnector";
+import {  project } from "../apis";
+
+
+export async function getProjectDetails(projectId , token) {
+    console.log("project Id " , projectId)
+    let result = null ; 
+
+    try{
+        const response = await apiConnector("POST" , project.GET_PROJECT_DETAILS_API , {projectId : projectId} , { 
+            Authorization: `Bearer ${token}` ,
+        } ) ;
+
+        if(!response.data.success){
+            throw new Error(response.data.message ) ; 
+        }
+
+        result = response.data.project ; 
+        console.log("PROJECT  RESPONSE..." , response) ; 
+
+    }
+    catch(err){
+        console.error(err) ; 
+    }
+
+    return result ; 
+}
+
+export async function getFileContent(fileId , token) {
+
+    let result = null ; 
+
+    try{
+        const response = await apiConnector("POST" , project.GET_FILE_CONTENT_API , {fileId : fileId} , { 
+            Authorization: `Bearer ${token}` ,
+        } ) ;
+
+        if(!response.data.success){
+            throw new Error(response.data.message ) ; 
+        }
+
+        result = response.data.file ; 
+        console.log("FILE  RESPONSE..." , response) ; 
+
+    }
+    catch(err){
+        console.error(err) ; 
+    }
+
+    return result ; 
+}
+
+export async function createProject(data , token) {
+
+    let result = null ; 
+    const tid = toast.loading("Creating Project...") ; 
+
+    try{
+        const response = await apiConnector("POST" , project.CREATE_PROJECT_API , data , { 
+            Authorization: `Bearer ${token}` ,
+        } ) ;
+
+        if(!response.data.success){
+            throw new Error(response.data.message ) ; 
+        }
+
+        result = response.data.project ; 
+        console.log("PROJECT  RESPONSE..." , response) ; 
+        toast.success("Project Created Successfully") ; 
+
+    }
+    catch(err){
+        console.error(err) ; 
+        toast.error("Project Creation Failed") ; 
+    }
+    toast.dismiss(tid) ;
+    return result ; 
+}

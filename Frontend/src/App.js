@@ -14,6 +14,8 @@ import Dashboard from "./pages/Dashboard";
 import MyProfile from "./components/dashboard/MyProfile";
 import MyProjects from "./components/dashboard/MyProjects";
 import ProjectCollab from "./components/dashboard/ProjectCollab";
+import CodeEditorPage from "./pages/CodeEditorPage";
+import CodeEditor from "./components/Editor/CodeEditor";
 
 function App() {
   return (
@@ -32,6 +34,13 @@ function App() {
           <Route path="/dashboard/my-profile" element={<MyProfile/>}/>
           <Route path="/dashboard/my-projects" element={<MyProjects/>}/>
           <Route path="/dashboard/projects-collab" element={<ProjectCollab/>}/>
+        </Route>
+
+        <Route path="/project" element={<PrivateRoute><CodeEditorPage/></PrivateRoute>}>
+          {/* <Route index element={<CodeEditor />} /> */}
+          <Route path=":projectId" element={<CodeEditor />} />
+          <Route path=":projectId/:folderId" element={<CodeEditor />} />
+          <Route path=":projectId/:folderId/:fileId" element={<CodeEditor />} />
         </Route>
 
 

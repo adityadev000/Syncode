@@ -3,10 +3,11 @@ const app = express();
 const dotenv = require("dotenv") ;
 const cors = require("cors") ;
 const database = require("./config/database") ; 
-const userRoutes = require("./routes/User") ; 
 const cookieParser = require("cookie-parser") ; 
 const {cloudinaryConnect} = require("./config/cloudinary") ;
 const fileUplaod = require("express-fileupload") ; 
+const userRoutes = require("./routes/User") ; 
+const projectRoutes = require("./routes/Project") ; 
 
 
 dotenv.config() ; 
@@ -33,6 +34,7 @@ app.use(
 cloudinaryConnect() ;
 
 app.use("/api/v1/user" , userRoutes) ;
+app.use("/api/v1/project" , projectRoutes) ;
 
 
 //default route

@@ -6,6 +6,10 @@ const folderSchema = new mongoose.Schema({
         trim : true , 
         required : true , 
     } , 
+    type : {
+        type : String , 
+        default : 'Folder'
+    },
     path : {
         type : String , 
         default : '' ,  
@@ -28,7 +32,6 @@ const folderSchema = new mongoose.Schema({
     parentFolderDirectory : {
         type : String , 
         default : "", 
-        default : null , 
     },
     parentFolder : {
         type : mongoose.Schema.Types.ObjectId , 
