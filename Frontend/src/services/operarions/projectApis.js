@@ -77,3 +77,87 @@ export async function createProject(data , token) {
     toast.dismiss(tid) ;
     return result ; 
 }
+
+
+export async function renameProjectName(data  ,  token) {
+
+    let result = null ; 
+    const tid = toast.loading("Loading...") ; 
+
+    try{
+        const response = await apiConnector("POST" , project.RENAME_PROJECT_NAME_API , data , { 
+            Authorization: `Bearer ${token}` ,
+        } ) ;
+
+        if(!response.data.success){
+            throw new Error(response.data.message ) ; 
+        }
+
+        result = response.data ; 
+        console.log("PROJECT  RESPONSE..." , response) ; 
+        toast.success("Project Renamed Successfully") ; 
+
+    }
+    catch(err){
+        console.error(err) ; 
+        toast.error("Project can not be Renamed") ; 
+    }
+    toast.dismiss(tid) ;
+    return result ; 
+}
+
+
+export async function renameFileName(data  ,  token) {
+
+    let result = null ; 
+    const tid = toast.loading("Loading...") ; 
+
+    try{
+        const response = await apiConnector("POST" , project.RENAME_FILE_NAME_API , data , { 
+            Authorization: `Bearer ${token}` ,
+        } ) ;
+
+        if(!response.data.success){
+            throw new Error(response.data.message ) ; 
+        }
+
+        result = response.data ; 
+        console.log("PROJECT  RESPONSE..." , response) ; 
+        toast.success("file Renamed Successfully") ; 
+
+    }
+    catch(err){
+        console.error(err) ; 
+        toast.error("file can not be Renamed") ; 
+    }
+    toast.dismiss(tid) ;
+    return result ; 
+}
+
+
+export async function renameFolderName(data  ,  token) {
+
+    let result = null ; 
+    const tid = toast.loading("Loading...") ; 
+
+    try{
+        const response = await apiConnector("POST" , project.RENAME_FOLDER_NAME_API , data , { 
+            Authorization: `Bearer ${token}` ,
+        } ) ;
+
+        if(!response.data.success){
+            throw new Error(response.data.message ) ; 
+        }
+
+        result = response.data ; 
+        console.log("PROJECT  RESPONSE..." , response) ; 
+        toast.success("folder Renamed Successfully") ; 
+
+    }
+    catch(err){
+        console.error(err) ; 
+        toast.error("folder can not be Renamed") ; 
+    }
+    toast.dismiss(tid) ;
+    return result ; 
+}

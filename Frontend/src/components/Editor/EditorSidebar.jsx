@@ -20,8 +20,6 @@ const EditorSidebar = () => {
 
         async function fetchProjectDetails() {
             setLoading(true) ; 
-            dispatch(setProjectLoading(true)) ; 
-            console.log(projectId) ; 
             const result = await getProjectDetails(projectId , token ) ; 
 
             if(result){
@@ -45,13 +43,13 @@ const EditorSidebar = () => {
 
         fetchProjectDetails() ; 
 
-    },[projectId] ) ; 
+    },[projectId , projectLoading] ) ; 
 
     const onFileClick = (file) => {
         navigate(`/project/${projectId}/${folderId}${file._id}`) ; 
     }
 
-    if(project == null || projectLoading === true || loading === true ){
+    if(project == null || loading === true ){
         return (
             <div>no file found</div>
         )
@@ -61,7 +59,7 @@ const EditorSidebar = () => {
             <div className='flex gap-2 '>
 
                 <div className=' uppercase'>{project.name}</div>
-                <Operations file={true} folder={true} deletee={false} path="root" name={project.name} project={project}/>
+                <Operations file={true} folder={true} deletee={false} path="root" name={project.name} project={project} type='project'/>
 
             </div>
 

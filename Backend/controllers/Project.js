@@ -4,7 +4,7 @@ const File = require("../models/file") ;
 const User = require("../models/User");
 
 async function populatedFolders(folderId) {
-    
+
     const folder = await Folder.findById(folderId)
     ?.populate("files")
     ?.populate("folders")
@@ -125,6 +125,107 @@ exports.createProject = async (req ,res) => {
         })
 
 
+    }
+    catch(err){
+        console.error(err) ; 
+        return res.status(500).json({
+            success : false , 
+            message : 'ISE' , 
+            error : err.message  ,
+        })
+    }
+}
+
+exports.getProjectsCreted = async (req ,res) => { 
+
+    try{
+        
+    }
+    catch(err){
+        console.error(err) ; 
+        return res.status(500).json({
+            success : false , 
+            message : 'ISE' , 
+            error : err.message  ,
+        })
+    }
+}
+
+exports.renameProjectName = async (req ,res) => { 
+
+    try{
+        const {name , projectId} = req.body ; 
+        const project = await Project.findByIdAndUpdate(
+            projectId , 
+            {
+                name : name , 
+            },
+            {
+                new : true 
+            }
+        )
+
+        return res.status(200).json({
+            success : true , 
+            message : 'Project Name Renamed', 
+        })
+    }
+    catch(err){
+        console.error(err) ; 
+        return res.status(500).json({
+            success : false , 
+            message : 'ISE' , 
+            error : err.message  ,
+        })
+    }
+}
+exports.renameFileName = async (req ,res) => { 
+
+    try{
+        const {name , fileId} = req.body ; 
+        const file = await File.findByIdAndUpdate(
+            fileId , 
+            {
+                name : name , 
+            },
+            {
+                new : true 
+            }
+        )
+
+        return res.status(200).json({
+            success : true , 
+            message : 'File Name Renamed', 
+        })
+    }
+    catch(err){
+        console.error(err) ; 
+        return res.status(500).json({
+            success : false , 
+            message : 'ISE' , 
+            error : err.message  ,
+        })
+    }
+}
+
+exports.renameFolderName = async (req ,res) => { 
+
+    try{
+        const {name , folderId} = req.body ; 
+        const folder = await Folder.findByIdAndUpdate(
+            folderId , 
+            {
+                name : name , 
+            },
+            {
+                new : true 
+            }
+        )
+
+        return res.status(200).json({
+            success : true , 
+            message : 'Folder Name Renamed', 
+        })
     }
     catch(err){
         console.error(err) ; 

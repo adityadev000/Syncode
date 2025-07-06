@@ -27,6 +27,7 @@ const Operations = ({file , folder , deletee , path ,name ,  project , type}) =>
 							type : "rename" , 
 							btn1Text : "Rename",
 							defaultValue :name,
+							rename : type , 
 							btn2Handler : () => {
 								setModalData(null) ; 
 							}

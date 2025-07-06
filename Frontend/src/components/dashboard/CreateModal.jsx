@@ -1,16 +1,21 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { renameFileName, renameFolderName, renameProjectName } from "../../services/operarions/projectApis";
+import { setProjectLoading } from "../../slices/projectSlice";
 
 const CreateModal = ({modalData , setModalData}) => {
     const { register, handleSubmit, reset , formState: { errors, isSubmitting } } = useForm();
     const {token} = useSelector((state) => state.auth) ; 
+    const {projectLoading} = useSelector((state) => state.project) ; 
     const {folderId , projectId , fileId } = useParams() ; 
+    const dispatch = useDispatch() ; 
 
 
-    const onSubmit = async() => {
+    const onSubmit = async(data ) => {
+        console.log("modal data " ,modalData) ; 
         if(modalData.type === 'File') {
             toast.success("file created")
         }
@@ -19,7 +24,29 @@ const CreateModal = ({modalData , setModalData}) => {
             
         }
         else{
-            toast.success("file Renamed")
+            if(modalData.rename === 'project'){
+                console.log("project renaming...")
+                const res = {
+                    name : data.name , 
+                    projectId,
+                }
+                await renameProjectName(res  ,token) ; 
+            }
+            else if (modalData.rename === 'file'){
+                const res = {
+                    name : data.name , 
+                    fileId,
+                }
+                await renameFileName(res  ,token) ; 
+            }
+            else{
+                const res = {
+                    name : data.name , 
+                    folderId,
+                }
+                await renameFolderName(res  ,token) ; 
+            }
+            dispatch(setProjectLoading(true) );
         }
         setModalData(null) ;
     }
@@ -35,7 +62,7 @@ const CreateModal = ({modalData , setModalData}) => {
         <div className=' font-bold text-white w-[calc(100vw-1rem)] h-[calc(100vh-3.5rem)]  flex items-center justify-center fixed top-0 left-0 backdrop-blur-sm z-40 '>
             <form 
                 onSubmit={handleSubmit(onSubmit)} 
-                className="bg-gray-900 shadow-lg p-8 rounded-lg w-full max-w-xl space-y-6 border-richblack-400 flex gap-5 flex-col"
+                className="bg-gray-900 shadow-lg p-8 rounded-lg w-full max-w-lg space-y-6 border-richblack-400 flex gap-5 flex-col"
             >
                 <h2 className="text-2xl font-semibold text-center text-blue-400">{modalData.text}</h2>
 
@@ -57,7 +84,7 @@ const CreateModal = ({modalData , setModalData}) => {
                     disabled={isSubmitting}
                     className="w-full bg-blue-500 hover:bg-blue-600 transition px-4 py-2 rounded font-medium text-white"
                 >
-                    {isSubmitting ? "Creating..." : `${modalData.btn1Text}`}
+                    {isSubmitting ? "loading..." : `${modalData.btn1Text}`}
                 </button>
                 <button onClick={ modalData.btn2Handler } className='w-full bg-blue-500 hover:bg-blue-600 transition px-4 py-2 rounded font-medium text-white'>
                     Cancel

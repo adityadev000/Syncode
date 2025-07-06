@@ -108,7 +108,12 @@ exports.getUserDetails = async (req ,res) => {
         const userId = req.user.id ; 
         const user = await User.findById(userId)
         .populate("projectCreated")
-        .populate("projectCollaborated")
+        .populate({
+            path : "projectCollaborated" , 
+            populate : {
+                path : "admin"
+            }
+        })
         .exec() ; 
 
         return res.status(200).json({

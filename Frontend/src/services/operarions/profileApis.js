@@ -66,7 +66,7 @@ export async function updateProfile(data , token) {
 export async function getUserDetail(token) {
     
     let result = null ; 
-
+    
     try{
         const response = await apiConnector("POST" , profile.GET_USER_DETAILS_API , null , { 
             Authorization: `Bearer ${token}` ,

@@ -15,4 +15,7 @@ export const project = {
     GET_PROJECT_DETAILS_API : BASE_URL + "/project/getProjectDetails" ,
     GET_FILE_CONTENT_API : BASE_URL + "/project/getFileContent" ,
     CREATE_PROJECT_API : BASE_URL + "/project/createProject" ,
+    RENAME_PROJECT_NAME_API : BASE_URL + "/project/renameProjectName" ,
+    RENAME_FILE_NAME_API : BASE_URL + "/project/renameFileName" ,
+    RENAME_FOLDER_NAME_API : BASE_URL + "/project/renameFolderName" ,
 }
