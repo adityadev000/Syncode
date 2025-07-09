@@ -13,16 +13,17 @@ const folderSchema = new mongoose.Schema({
     path : {
         type : String , 
         default : '' ,  
+        trim : true , 
     },
     projectId : {
         type : mongoose.Schema.Types.ObjectId , 
         ref : 'Project' ,
         required : true , 
+
     } , 
     createdBy : {
         type : mongoose.Schema.Types.ObjectId , 
         ref : 'User' ,
-        required : true , 
     },
     
     createdAt : {
@@ -32,6 +33,7 @@ const folderSchema = new mongoose.Schema({
     parentFolderDirectory : {
         type : String , 
         default : "", 
+        trim : true , 
     },
     parentFolder : {
         type : mongoose.Schema.Types.ObjectId , 

@@ -13,10 +13,12 @@ const fileSchema = new mongoose.Schema({
     path : {
         type : String , 
         default : '' , 
+        trim : true , 
     },
     parentFolderDirectory : {
         type : String , 
         default : '' , 
+        trim : true , 
     },
     projectId : {
         type : mongoose.Schema.Types.ObjectId , 

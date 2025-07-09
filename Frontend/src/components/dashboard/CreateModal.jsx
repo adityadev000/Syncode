@@ -3,51 +3,62 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { renameFileName, renameFolderName, renameProjectName } from "../../services/operarions/projectApis";
+import { createFile, createFolder, renameFileName, renameFolderName, renameProjectName } from "../../services/operarions/projectApis";
 import { setProjectLoading } from "../../slices/projectSlice";
 
 const CreateModal = ({modalData , setModalData}) => {
     const { register, handleSubmit, reset , formState: { errors, isSubmitting } } = useForm();
     const {token} = useSelector((state) => state.auth) ; 
-    const {projectLoading} = useSelector((state) => state.project) ; 
     const {folderId , projectId , fileId } = useParams() ; 
     const dispatch = useDispatch() ; 
 
 
     const onSubmit = async(data ) => {
+
         console.log("modal data " ,modalData) ; 
-        if(modalData.type === 'File') {
-            toast.success("file created")
-        }
-        else if(modalData.type === 'Folder'){
-            toast.success("folder created")
-            
-        }
-        else{
-            if(modalData.rename === 'project'){
-                console.log("project renaming...")
-                const res = {
-                    name : data.name , 
-                    projectId,
-                }
-                await renameProjectName(res  ,token) ; 
+
+        if(modalData.opr === "rename"){
+
+            if(modalData.type === "Project"){
+
             }
-            else if (modalData.rename === 'file'){
-                const res = {
-                    name : data.name , 
-                    fileId,
-                }
-                await renameFileName(res  ,token) ; 
-            }
-            else{
+            else if (modalData.type === "Folder"){
                 const res = {
                     name : data.name , 
                     folderId,
                 }
                 await renameFolderName(res  ,token) ; 
             }
-            dispatch(setProjectLoading(true) );
+            else{
+                //file rename 
+                const res = {
+                    name : data.name , 
+                    fileId,
+                }
+                await renameFileName(res  ,token) ;
+            }
         }
+        if(modalData.opr === "folder"){
+
+            const res = {
+                    name  : data.name , 
+                    path : modalData.path , 
+                    projectId : projectId , 
+                }
+            console.log("res = " , res ) ; 
+            const result = await createFolder(res , token ) ; 
+        }
+        else{
+            // create file
+            const res = {
+                name  : data.name , 
+                path : modalData.path , 
+                projectId : projectId , 
+            }
+            console.log("res = " , res ) ; 
+            const result = await createFile(res , token ) ;
+        }
+        dispatch(setProjectLoading(true) );
         setModalData(null) ;
     }
 
@@ -72,7 +83,7 @@ const CreateModal = ({modalData , setModalData}) => {
                     <input
                         {...register("name", { required: "Project name is required" })}
                         type="text"
-                        placeholder={`Enter ${modalData.type} Name`}
+                        placeholder={`Enter ${modalData.opr} Name`}
                         className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-blue-500"
                     />
                     {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name.message}</p>}

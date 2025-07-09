@@ -7,7 +7,7 @@ const CodeEditor = () => {
     const {projectId , fileId} = useParams() ; 
     const {token} = useSelector((state) => state.auth) ; 
     const [file , setFile] = useState(null) ; 
-    const [code, setCode] = useState('//write your own code here');
+    const [code, setCode] = useState("");
     const [loading, setLoading] = useState(true);
 
     const handleEditorChange = (value) => {
@@ -22,12 +22,14 @@ const CodeEditor = () => {
             if(result){
                 setFile(result) ; 
                 if(file?.content !== '' ) 
-                    setCode(file?.content) ; 
+                    setCode(file.content) ; 
             }
+            setLoading(false) ; 
         };
-
+        console.log(fileId) ; 
         if (fileId) fetchFile();
     }, [fileId]);
+
 
     if(!file || loading ){
         return (

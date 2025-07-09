@@ -4,6 +4,7 @@ import Operations from './Operations'
 import { getProjectDetails } from '../../services/operarions/projectApis';
 import { useDispatch, useSelector } from 'react-redux';
 import {setProject, setProjectLoading} from '../../slices/projectSlice'
+import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 
 
 const EditorSidebar = () => {
@@ -25,8 +26,8 @@ const EditorSidebar = () => {
             if(result){
                 dispatch(setProject(result)) 
                 
-                const rootFolders = result.folders.length > 0 ?  result?.folders(item => item.parentFolderDirectory === 'root/') : null  ; 
-                const rootFiles = result.folders.length > 0 ? result?.files(item => item.parentFolderDirectory === 'root/') : null  ; 
+                const rootFolders = result?.folders.length > 0 ?  result?.folders.filter(item => item.parentFolderDirectory === 'root') : null  ; 
+                const rootFiles = result?.files.length > 0 ? result?.files.filter(item => item.parentFolderDirectory === 'root') : null  ; 
 
                 const data = {
                     rootFolders , 
@@ -46,7 +47,10 @@ const EditorSidebar = () => {
     },[projectId , projectLoading] ) ; 
 
     const onFileClick = (file) => {
-        navigate(`/project/${projectId}/${folderId}${file._id}`) ; 
+        if(file.parentFolder === null) {
+            navigate(`/project/${projectId}/root/${file._id}`)
+        }
+        navigate(`/project/${projectId}/${folderId}/${file._id}`) ; 
     }
 
     if(project == null || loading === true ){
@@ -59,7 +63,7 @@ const EditorSidebar = () => {
             <div className='flex gap-2 '>
 
                 <div className=' uppercase'>{project.name}</div>
-                <Operations file={true} folder={true} deletee={false} path="root" name={project.name} project={project} type='project'/>
+                <Operations file={true} folder={true} deletee={false} path="root" name={project.name} project={project} type='Project'/>
 
             </div>
 
@@ -90,24 +94,38 @@ const FolderView = ({node, onFileClick }) => {
     const [open , setOpen] = useState(false) ;  
     const navigate = useNavigate() ; 
     const {projectId } = useParams() ; 
+    const {project } = useSelector((state) => state.project) ; 
     return (
-        <div>
+        <div className=' pl-2'>
             {
                 node.type === 'Folder' ?(
-                    <>
-                        <div onClick={() => {
-                            if(open){
-                                navigate(`/project/${projectId}`) ; 
-                                setOpen(false) ; 
-                            }
-                            else{
-                                navigate(`/project/${projectId}/${node._id}`) ; 
-                                setOpen(true) ; 
-                            }
+                    <div>
 
-                        } } >
-                            {node.name}
-                            <Operations/>
+                        <div className='flex gap-2 items-center'>
+                            <div className='flex gap-2 items-center' onClick={() => {
+                                if(open){
+                                    setOpen(false) ; 
+                                    navigate(`/project/${projectId}`) ; 
+                                }
+                                else{
+                                    setOpen(true) ; 
+                                    navigate(`/project/${projectId}/${node._id}`) ; 
+                                }
+                            
+                            } } >
+                                <div className=' text-3xl -mr-3 '>
+                                    {
+                                        !open ? <IoMdArrowDropdown className='text-3xl'/> : <IoMdArrowDropup className='text-3xl' />
+                                    }
+                                </div>
+                                <div>
+
+                                    {node.name}
+                                </div>
+                            </div>
+                            <div onClick={() => {if(!open) {setOpen(true) ;  navigate(`/project/${projectId}/${node._id}`) ; } }} >
+                                <Operations file={true} folder={true} deletee={true} path={node.path} name={node.name} project={project} type='Folder' />
+                            </div>
                         </div>
                         {open && (
                                 <div>
@@ -124,11 +142,11 @@ const FolderView = ({node, onFileClick }) => {
                                     }
                                 </div>
                         )}
-                    </>
+                    </div>
                 ) : (
-                    <div onClick={() => onFileClick(node)}>
+                    <div onClick={() => onFileClick(node)} className=' flex items-center pl-6'>
                         {node.name}
-                        <Operations/>
+                        <Operations file={false} folder={false}  deletee={true} path={node.path} name={node.name} project={project} type='File' />
                     </div>
                 )
             }

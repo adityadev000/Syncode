@@ -18,4 +18,8 @@ export const project = {
     RENAME_PROJECT_NAME_API : BASE_URL + "/project/renameProjectName" ,
     RENAME_FILE_NAME_API : BASE_URL + "/project/renameFileName" ,
     RENAME_FOLDER_NAME_API : BASE_URL + "/project/renameFolderName" ,
+    CREATE_FOLDER_API : BASE_URL + "/project/createFolder" ,
+    CREATE_FILE_API : BASE_URL + "/project/createFile" ,
+    DELETE_FILE_API : BASE_URL + "/project/deleteFile" ,
+    DELETE_FOLDER_API : BASE_URL + "/project/deleteFolder" ,
 }
