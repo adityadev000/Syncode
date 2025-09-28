@@ -273,3 +273,30 @@ export async function deleteFolder(data  ,  token) {
     toast.dismiss(tid) ;
     return result ; 
 }
+
+export async function saveFileData(fileId , code ,  token) {
+
+    let result = null ; 
+    const tid = toast.loading("Saving file...") ; 
+
+    try{
+        const response = await apiConnector("POST" , project.SAVE_FILE_API , {fileId , code} , { 
+            Authorization: `Bearer ${token}` ,
+        } ) ;
+
+        if(!response.data.success){
+            throw new Error(response.data.message ) ; 
+        }
+
+        result = response.data; 
+        console.log(" Savae FILE  RESPONSE..." , response) ; 
+        toast.success("File Saved") ; 
+
+    }
+    catch(err){
+        console.error(err) ; 
+        toast.error("File can not be Saved") ; 
+    }
+    toast.dismiss(tid) ;
+    return result ; 
+}

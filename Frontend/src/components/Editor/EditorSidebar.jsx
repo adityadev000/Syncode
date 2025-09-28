@@ -26,8 +26,8 @@ const EditorSidebar = () => {
             if(result){
                 dispatch(setProject(result)) 
                 
-                const rootFolders = result?.folders.length > 0 ?  result?.folders.filter(item => item.parentFolderDirectory === 'root') : null  ; 
-                const rootFiles = result?.files.length > 0 ? result?.files.filter(item => item.parentFolderDirectory === 'root') : null  ; 
+                const rootFolders = result?.folders.length > 0 ?  result?.folders.filter(item => item?.parentFolderDirectory === 'root') : null  ; 
+                const rootFiles = result?.files.length > 0 ? result?.files.filter(item => item?.parentFolderDirectory === 'root') : null  ; 
 
                 const data = {
                     rootFolders , 
@@ -41,19 +41,29 @@ const EditorSidebar = () => {
             dispatch(setProjectLoading(false)) ; 
             setLoading(false) ; 
         }
+console.log("dependencies changed. rerender " ) ; 
 
         fetchProjectDetails() ; 
 
     },[projectId , projectLoading] ) ; 
 
     const onFileClick = (file) => {
-        if(file.parentFolder === null) {
-            navigate(`/project/${projectId}/root/${file._id}`)
+        console.log("this file clcicked " , file) ; 
+        if(file.parentFolderDirectory === "root") {
+            console.log("root file ") ; 
+            navigate(`/project/${projectId}/file/${file._id}`)
         }
-        navigate(`/project/${projectId}/${folderId}/${file._id}`) ; 
+        else{
+            navigate(`/project/${projectId}/folder/${folderId}/file/${file._id}`) ; 
+        } 
     }
+    if(loading){
+        return (
+            <div>Loading...</div>
+        )
 
-    if(project == null || loading === true ){
+    }
+    if(project == null ){
         return (
             <div>no file found</div>
         )
@@ -62,8 +72,14 @@ const EditorSidebar = () => {
         <div>
             <div className='flex gap-2 '>
 
-                <div className=' uppercase'>{project.name}</div>
-                <Operations file={true} folder={true} deletee={false} path="root" name={project.name} project={project} type='Project'/>
+                <div className='group flex gap-2'>
+
+                    <div className=' uppercase cursor-pointer'>{project.name}</div>
+                    <div className=' opacity-0 group-hover:opacity-100'>
+
+                        <Operations file={true} folder={true} deletee={false} path="root" name={project.name} project={project} type='Project'/>
+                    </div>
+                </div>
 
             </div>
 
@@ -91,7 +107,7 @@ const EditorSidebar = () => {
 }
 
 const FolderView = ({node, onFileClick }) => {
-    const [open , setOpen] = useState(false) ;  
+    const [open , setOpen] = useState(true) ;  
     const navigate = useNavigate() ; 
     const {projectId } = useParams() ; 
     const {project } = useSelector((state) => state.project) ; 
@@ -101,29 +117,28 @@ const FolderView = ({node, onFileClick }) => {
                 node.type === 'Folder' ?(
                     <div>
 
-                        <div className='flex gap-2 items-center'>
-                            <div className='flex gap-2 items-center' onClick={() => {
+                        <div className='flex gap-2 items-center group' onClick={() => {
                                 if(open){
                                     setOpen(false) ; 
-                                    navigate(`/project/${projectId}`) ; 
                                 }
                                 else{
                                     setOpen(true) ; 
-                                    navigate(`/project/${projectId}/${node._id}`) ; 
                                 }
+                                    navigate(`/project/${projectId}/folder/${node._id}`) ; 
                             
-                            } } >
+                            } }>
+                            <div className='flex gap-2 items-center'  >
                                 <div className=' text-3xl -mr-3 '>
                                     {
                                         !open ? <IoMdArrowDropdown className='text-3xl'/> : <IoMdArrowDropup className='text-3xl' />
                                     }
                                 </div>
-                                <div>
+                                <div className='cursor-pointer'>
 
                                     {node.name}
                                 </div>
                             </div>
-                            <div onClick={() => {if(!open) {setOpen(true) ;  navigate(`/project/${projectId}/${node._id}`) ; } }} >
+                            <div className=' opacity-0 group-hover:opacity-100' onClick={() => {if(!open) {setOpen(true) ;  navigate(`/project/${projectId}/folder/${node._id}`) ; } }} >
                                 <Operations file={true} folder={true} deletee={true} path={node.path} name={node.name} project={project} type='Folder' />
                             </div>
                         </div>
@@ -144,10 +159,12 @@ const FolderView = ({node, onFileClick }) => {
                         )}
                     </div>
                 ) : (
-                    <div onClick={() => onFileClick(node)} className=' flex items-center pl-6'>
-                        {node.name}
-                        <Operations file={false} folder={false}  deletee={true} path={node.path} name={node.name} project={project} type='File' />
-                    </div>
+                        <div onClick={() => onFileClick(node)} className=' group flex items-center pl-6 cursor-pointer'>
+                            {node.name}
+                            <div className=' opacity-0 group-hover:opacity-100'>
+                                <Operations file={false} folder={false}  deletee={true} path={node.path} name={node.name} project={project} type='File' />
+                            </div>
+                        </div>
                 )
             }
         </div>

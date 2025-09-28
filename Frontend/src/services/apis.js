@@ -22,4 +22,5 @@ export const project = {
     CREATE_FILE_API : BASE_URL + "/project/createFile" ,
     DELETE_FILE_API : BASE_URL + "/project/deleteFile" ,
     DELETE_FOLDER_API : BASE_URL + "/project/deleteFolder" ,
+    SAVE_FILE_API : BASE_URL + "/project/saveFile" ,
 }

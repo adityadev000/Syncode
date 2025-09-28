@@ -67,7 +67,8 @@ exports.getFileContent = async (req ,res) => {
 
     try{
         const{fileId} = req.body ; 
-        console.log("file id " , fileId) ;
+
+
 
         const file= await File.findById(fileId) ; 
 
@@ -346,7 +347,7 @@ exports.createFile = async (req ,res) => {
             path : currPath , 
             projectId : projectId,
             createdBy : user._id , 
-            content : "//write Your own code below" , 
+            content : "" , 
             parentFolderDirectory : path , 
             parentFolder : parentFolder ,
         })
@@ -397,14 +398,8 @@ exports.deleteFile = async (req ,res) => {
         const {fileId , parentFolder , projectId } = req.body ; 
         const userId = req.user.id ; 
 
-        if(!fileId ||  !parentFolder || !projectId || !userId ){
-            return res.status(200).json({
-                success : false , 
-                message : 'All fields are required', 
-            })
-        }
-
-        if(parentFolder !== null ||parentFolder !== undefined  ){
+console.log("parentFolder " , parentFolder) ; 
+        if(parentFolder !== undefined ){
             await Folder.findByIdAndUpdate(
                 parentFolder, 
                 {
@@ -415,7 +410,7 @@ exports.deleteFile = async (req ,res) => {
                 {new : true } , 
             )
         }
-
+console.log("remove parent folder passed") ; 
         await Project.findByIdAndUpdate(
             projectId , 
             {
@@ -425,8 +420,9 @@ exports.deleteFile = async (req ,res) => {
             },
             {new : true}  , 
         )
-
+console.log("remove from project file passed") ;
         await File.findByIdAndDelete(fileId) ;  
+console.log("file deletd") ;
 
         return res.status(200).json({
             success : true , 
@@ -442,21 +438,69 @@ exports.deleteFile = async (req ,res) => {
         })
     }
 }
+
+const deleteAllFolder = async (folder , projectId) => {
+
+    if(folder === undefined ){
+        return ; 
+    }
+
+
+    if(folder?.folders?.length > 0 ){
+
+        for(const subFolderId of folder?.folders){
+            const subFolder = await Folder.findById(subFolderId);
+            deleteAllFolder(subFolder , projectId) ; 
+        }
+    }
+
+    //delete all files in folder and after delete this folder also. 
+
+    if(folder?.files?.length > 0 ){
+        for(const fileId of folder?.files) {
+            await Project.findByIdAndUpdate(projectId ,
+                {
+                    $pull : {
+                        files : fileId , 
+                    }
+                },
+                {new : true}  , 
+            )
+            await File.findByIdAndDelete(fileId) ;
+        }
+    }
+
+
+    //delete the current folder. 
+    await Project.findByIdAndUpdate(projectId ,
+            {
+                $pull : {
+                    folders : folder._id , 
+                }
+            },
+            {new : true}  , 
+        )
+    await Folder.findByIdAndDelete(folder._id) ;
+
+}
 exports.deleteFolder = async (req ,res) => { 
 
     try{
         const {folderId , parentFolder , projectId } = req.body ; 
         const userId = req.user.id ; 
 
-        
-        if(!folderId ||  !parentFolder || !projectId || !userId ){
+        if(folderId === undefined ){
             return res.status(200).json({
-                success : false , 
-                message : 'All fields are required', 
+                success : "false" , 
+                message : 'folderId is Undefined', 
             })
         }
+        console.log("folder iD " , folderId ) ; 
+        const mainFolder = await Folder.findById(folderId) ; 
+        console.log("main folder = " , mainFolder ) ; 
+        deleteAllFolder(mainFolder , projectId) ; 
 
-        if(parentFolder !== null ||parentFolder !== undefined  ){
+        if(parentFolder !== undefined  ){
             await Folder.findByIdAndUpdate(
                 parentFolder , 
                 {
@@ -468,21 +512,34 @@ exports.deleteFolder = async (req ,res) => {
             )
         }
 
-        await Project.findByIdAndUpdate(
-            projectId , 
-            {
-                $pull : {
-                    folders : folderId , 
-                }
-            },
-            {new : true}  , 
-        )
+        return res.status(200).json({
+            success : true , 
+            message : 'Folder Deleted Successfully',
+        })
+    }
+    catch(err){
+        console.error(err) ; 
+        return res.status(500).json({
+            success : false , 
+            message : 'ISE' , 
+            error : err.message  ,
+        })
+    }
+}
 
-        await Folder.findByIdAndDelete(folderId) ;  
+exports.saveFile = async (req ,res) => { 
+
+    try{
+        const {fileId , code} = req.body ;  
+
+        const updatedFile = await File.findByIdAndUpdate(fileId , 
+            {content : code } , 
+            {new : true } 
+        )
 
         return res.status(200).json({
             success : true , 
-            message : 'file Deleted Successfully',
+            message : 'file saved successfully', 
         })
     }
     catch(err){

@@ -10,7 +10,7 @@ const Navbar = () => {
     const {user} = useSelector((state) => state.user) ; 
 
     return (
-        <nav className="bg-gray-950 text-white w-full px-6 py-3 flex justify-between items-center shadow-md fixed top-0 z-50 bg-gray-900 border-b border-b-richblack-600">
+        <nav className="bg-gray-950 text-white w-full px-6 py-3 flex justify-between items-center shadow-md fixed top-0 z-30 bg-gray-900 border-b border-b-richblack-600">
         {/* Logo */}
             <div className="text-xl font-bold">
                 {/* <span className="text-blue-500">Syn</span>code */}

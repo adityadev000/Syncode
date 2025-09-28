@@ -13,7 +13,8 @@ const {
     createFolder,
     createFile,
     deleteFile,
-    deleteFolder
+    deleteFolder,
+    saveFile,
 
 
 
@@ -30,5 +31,6 @@ router.post("/createFolder" , auth , createFolder) ;
 router.post("/createFile" , auth , createFile) ; 
 router.post("/deleteFile" , auth , deleteFile) ; 
 router.post("/deleteFolder" , auth , deleteFolder) ; 
+router.post("/saveFile" , auth , saveFile) ; 
 
 module.exports = router ; 

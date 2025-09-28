@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { createFile, createFolder, renameFileName, renameFolderName, renameProjectName } from "../../services/operarions/projectApis";
 import { setProjectLoading } from "../../slices/projectSlice";
 
@@ -11,6 +11,7 @@ const CreateModal = ({modalData , setModalData}) => {
     const {token} = useSelector((state) => state.auth) ; 
     const {folderId , projectId , fileId } = useParams() ; 
     const dispatch = useDispatch() ; 
+    const navigate = useNavigate() ; 
 
 
     const onSubmit = async(data ) => {
@@ -38,7 +39,7 @@ const CreateModal = ({modalData , setModalData}) => {
                 await renameFileName(res  ,token) ;
             }
         }
-        if(modalData.opr === "folder"){
+        else if(modalData.opr === "folder"){
 
             const res = {
                     name  : data.name , 
@@ -57,6 +58,11 @@ const CreateModal = ({modalData , setModalData}) => {
             }
             console.log("res = " , res ) ; 
             const result = await createFile(res , token ) ;
+            if(result.parentFolder === null) {
+                navigate(`/project/${projectId}/file/${result._id}`)
+            }
+            navigate(`/project/${projectId}/folder/${folderId}/file/${result._id}`) ;
+            
         }
         dispatch(setProjectLoading(true) );
         setModalData(null) ;
@@ -68,12 +74,12 @@ const CreateModal = ({modalData , setModalData}) => {
         });
     }, [modalData, reset]);
 
-    if (!modalData) return null;
+    if (!modalData) return (<div>No Data to display </div>);
     return (   
-        <div className=' font-bold text-white w-[calc(100vw-1rem)] h-[calc(100vh-3.5rem)]  flex items-center justify-center fixed top-0 left-0 backdrop-blur-sm z-40 '>
+        <div className=' font-bold text-white w-screen h-screen flex items-center justify-center fixed top-0 left-0 backdrop-blur-sm z-50 '>
             <form 
                 onSubmit={handleSubmit(onSubmit)} 
-                className="bg-gray-900 shadow-lg p-8 rounded-lg w-full max-w-lg space-y-6 border-richblack-400 flex gap-5 flex-col"
+                className="bg-gray-900 shadow-lg p-8 rounded-lg w-full max-w-lg space-y-6 border-richblack-400 flex gap-5 flex-col z-50"
             >
                 <h2 className="text-2xl font-semibold text-center text-blue-400">{modalData.text}</h2>
 

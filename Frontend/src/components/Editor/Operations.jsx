@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { FiFilePlus } from 'react-icons/fi'
 import { MdDriveFileRenameOutline, MdOutlineCreateNewFolder, MdOutlineDelete } from 'react-icons/md'
 import CreateModal from '../dashboard/CreateModal' ; 
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ConfirmationModal from '../common/ConfirmationModal';
 import { deleteFile, deleteFolder } from '../../services/operarions/projectApis';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,21 +14,26 @@ const Operations = ({file , folder , deletee , path ,name ,  project , type}) =>
 	const {folderId , projectId , fileId } = useParams() ; 
 	const {token} = useSelector((state) => state.auth ) ; 
 	const dispatch = useDispatch() ; 
+	const navigate = useNavigate() ; 
 
 	const deleteHandler = async() => {
 		//delete
+		console.log("delete handler called " ) ; 
+
 		const res = {
 			fileId , 
 			folderId , 
-			parentFolder : folderId , 
+			parentFolder :  folderId , 
 			projectId ,
 		}
 		console.log("res = " , res ) ; 
 		if(type === "File"){
 			await deleteFile(res , token) ; 
+			navigate(`/project/${projectId}/folder/${folderId}`) ; 
 		}
 		else{
 			await deleteFolder(res , token ) ; 
+			navigate(`/project/${projectId}`) ; 
 		}
 
 		dispatch(setProjectLoading(true)) ;

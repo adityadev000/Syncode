@@ -21,7 +21,9 @@ app.use(express.json()) ;
 app.use(cookieParser()) ;
 app.use(
     cors({
-        origin : "https://syncode-lovat.vercel.app" , 
+        // origin : "https://syncode-lovat.vercel.app" , 
+        origin : "http://localhost:3000" , 
+
         credentials : true , 
     })
 )

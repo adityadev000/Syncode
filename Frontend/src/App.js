@@ -39,8 +39,9 @@ function App() {
         <Route path="/project" element={<PrivateRoute><CodeEditorPage/></PrivateRoute>}>
           {/* <Route index element={<CodeEditor />} /> */}
           <Route path=":projectId" element={<CodeEditor />} />
-          <Route path=":projectId/:folderId" element={<CodeEditor />} />
-          <Route path=":projectId/:folderId/:fileId" element={<CodeEditor />} />
+          <Route path=":projectId/folder/:folderId" element={<CodeEditor />} />
+          <Route path=":projectId/file/:fileId" element={<CodeEditor />} />
+          <Route path=":projectId/folder/:folderId/file/:fileId" element={<CodeEditor />} />
         </Route>
 
 
