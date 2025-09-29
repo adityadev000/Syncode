@@ -22,6 +22,19 @@ const projectSchema = new mongoose.Schema({
             ref : "User" , 
         }
     ],
+    activeUsers : [{
+        user:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"User",
+        },
+        cursorColor:{
+            type:String,
+            required:true,
+            default:function(){
+                return `rgb(${Math.floor(Math.random()*200)+55},${Math.floor(Math.random()*200)+55},${Math.floor(Math.random()*200)+55})`;
+            }
+        },
+    }],
     rootPath : {
         type : String , 
         trim : true , 

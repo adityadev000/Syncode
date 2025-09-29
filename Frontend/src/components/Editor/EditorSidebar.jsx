@@ -5,7 +5,7 @@ import { getProjectDetails } from '../../services/operarions/projectApis';
 import { useDispatch, useSelector } from 'react-redux';
 import {setProject, setProjectLoading} from '../../slices/projectSlice'
 import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
-
+import {setActiveObject} from '../../slices/editorSlice' ; 
 
 const EditorSidebar = () => {
 
@@ -54,7 +54,8 @@ console.log("dependencies changed. rerender " ) ;
             navigate(`/project/${projectId}/file/${file._id}`)
         }
         else{
-            navigate(`/project/${projectId}/folder/${folderId}/file/${file._id}`) ; 
+            dispatch(setActiveObject(file)) ; 
+            navigate(`/project/${projectId}/folder/${file.parentFolder}/file/${file._id}`) ; 
         } 
     }
     if(loading){

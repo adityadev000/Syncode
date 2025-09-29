@@ -15,8 +15,10 @@ const {
     deleteFile,
     deleteFolder,
     saveFile,
-
-
+    joinByRoomId,
+    addActiveUser,
+    removeActiveUser,
+    deleteProject,
 
 
 } = require("../controllers/Project") ; 
@@ -32,5 +34,10 @@ router.post("/createFile" , auth , createFile) ;
 router.post("/deleteFile" , auth , deleteFile) ; 
 router.post("/deleteFolder" , auth , deleteFolder) ; 
 router.post("/saveFile" , auth , saveFile) ; 
+router.post("/joinByRoomId" , auth , joinByRoomId) ; 
+router.post("/addActiveUser" , auth , addActiveUser) ; 
+router.post("/removeActiveUser" , auth , removeActiveUser) ; 
+//remove this later
+router.post("/deleteProject"  , deleteProject) ; 
 
 module.exports = router ; 

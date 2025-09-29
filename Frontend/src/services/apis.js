@@ -23,4 +23,9 @@ export const project = {
     DELETE_FILE_API : BASE_URL + "/project/deleteFile" ,
     DELETE_FOLDER_API : BASE_URL + "/project/deleteFolder" ,
     SAVE_FILE_API : BASE_URL + "/project/saveFile" ,
+    JOIN_ROOM_API : BASE_URL + "/project/joinByRoomId" ,
+    ADD_ACTIVE_USERS_API : BASE_URL + "/project/addActiveUser" ,
+    REMOVE_ACTIVE_USERS_API : BASE_URL + "/project/removeActiveUser" ,
+    // remove this later 
+    DELETE_PROJECT_API : BASE_URL + "/project/deleteProject" ,
 }

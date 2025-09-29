@@ -1,9 +1,11 @@
 import React, {  useState } from 'react';
 import logo from '../../assets/Syncode_logo.png'
 import CreateProjectForm from './CreateProjectForm';
+import CreateJoinRoomForm from './CreateJoinRoomForm';
 
 const HeroSection = () => {
     const [btn , setBtn] = useState(false) ; 
+    const [joinBtn , setJoinBtn] = useState(false) ; 
 
     return (
         <section className="bg-gray-900 text-white  flex flex-col items-center justify-center ">
@@ -20,7 +22,9 @@ const HeroSection = () => {
                 className="bg-blue-600 hover:bg-blue-700 transition px-6 py-3 rounded-md text-white font-medium">
                 Create Project
             </button>
-            <button className="bg-gray-800 hover:bg-gray-700 transition px-6 py-3 rounded-md text-white font-medium">
+            <button className="bg-gray-800 hover:bg-gray-700 transition px-6 py-3 rounded-md text-white font-medium"
+                onClick={() => setJoinBtn(true) } 
+            >
                 Join with Room ID
             </button>
             <label className="cursor-pointer inline-block">
@@ -38,6 +42,9 @@ const HeroSection = () => {
 
         {
             btn && (<CreateProjectForm setBtn= {setBtn}/>)
+        }
+        {
+            joinBtn && (<CreateJoinRoomForm setJoinBtn={setJoinBtn}/>)
         }
         </section>
 

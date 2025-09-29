@@ -274,29 +274,108 @@ export async function deleteFolder(data  ,  token) {
     return result ; 
 }
 
-export async function saveFileData(fileId , code ,  token) {
+export async function saveFileData(fileId, ydocState, token) {
+    let result = null;
+    const tid = toast.loading("Saving file...");
+
+    try {
+        const response = await apiConnector(
+            "POST",
+            project.SAVE_FILE_API,
+            { fileId, ydocState }, // send as 'ydocState' so backend knows it's Yjs snapshot
+            {
+                Authorization: `Bearer ${token}`,
+            }
+        );
+
+        if (!response.data.success) {
+            throw new Error(response.data.message);
+        }
+
+        result = response.data;
+        console.log("Save FILE RESPONSE:", response);
+        toast.success("File Saved");
+    } catch (err) {
+        console.error(err);
+        toast.error("File cannot be saved");
+    }
+
+    toast.dismiss(tid);
+    return result;
+}
+
+
+export async function joinByRoomId(token , projectId) {
 
     let result = null ; 
-    const tid = toast.loading("Saving file...") ; 
+    const tid = toast.loading("Joining...") ; 
 
     try{
-        const response = await apiConnector("POST" , project.SAVE_FILE_API , {fileId , code} , { 
+        const response = await apiConnector("POST" , project.JOIN_ROOM_API, {projectId} , { 
             Authorization: `Bearer ${token}` ,
         } ) ;
 
+        console.log(" JOIN BY ROOM ..." , response) ; 
         if(!response.data.success){
             throw new Error(response.data.message ) ; 
         }
 
         result = response.data; 
-        console.log(" Savae FILE  RESPONSE..." , response) ; 
-        toast.success("File Saved") ; 
+        toast.success("you have successfully joined this room ") ; 
 
     }
     catch(err){
         console.error(err) ; 
-        toast.error("File can not be Saved") ; 
+        toast.error(err.message) ; 
     }
     toast.dismiss(tid) ;
+    return result ; 
+}
+
+export async function addActiveUsers(token , projectId) {
+
+    let result = null ;  
+
+    try{
+        const response = await apiConnector("POST" , project.ADD_ACTIVE_USERS_API, {projectId} , { 
+            Authorization: `Bearer ${token}` ,
+        } ) ;
+
+        console.log(" ADD ACTIVE USER ..." , response) ; 
+        if(!response.data.success){
+            throw new Error(response.data.message ) ; 
+        }
+
+        result = response.data.project; 
+
+    }
+    catch(err){
+        console.error(err) ; 
+        toast.error(err.message) ; 
+    }
+    return result ; 
+}
+
+export async function removeActiveUsers(token , projectId) {
+
+    let result = null ;  
+
+    try{
+        const response = await apiConnector("POST" , project.REMOVE_ACTIVE_USERS_API, {projectId} , { 
+            Authorization: `Bearer ${token}` ,
+        } ) ;
+
+        console.log(" REMOVE ACTIVE USER ..." , response) ; 
+        if(!response.data.success){
+            throw new Error(response.data.message ) ; 
+        }
+
+        result = response.data.project; 
+
+    }
+    catch(err){
+        console.error(err) ; 
+        toast.error(err.message) ; 
+    }
     return result ; 
 }

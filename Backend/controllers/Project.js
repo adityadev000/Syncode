@@ -2,6 +2,7 @@ const Project = require("../models/Project");
 const Folder = require("../models/folder") ; 
 const File = require("../models/file") ;
 const User = require("../models/User");
+const mongoose = require("mongoose");
 
 async function populateFolderRecursively(folderId) {
 
@@ -145,20 +146,6 @@ exports.createProject = async (req ,res) => {
     }
 }
 
-exports.getProjectsCreted = async (req ,res) => { 
-
-    try{
-        
-    }
-    catch(err){
-        console.error(err) ; 
-        return res.status(500).json({
-            success : false , 
-            message : 'ISE' , 
-            error : err.message  ,
-        })
-    }
-}
 
 exports.renameProjectName = async (req ,res) => { 
 
@@ -530,16 +517,184 @@ exports.deleteFolder = async (req ,res) => {
 exports.saveFile = async (req ,res) => { 
 
     try{
-        const {fileId , code} = req.body ;  
+        const { fileId } = req.body; 
 
-        const updatedFile = await File.findByIdAndUpdate(fileId , 
-            {content : code } , 
-            {new : true } 
-        )
+        const updatedFile = await File.findByIdAndUpdate(
+            fileId,
+            { content: ydocState }, // store the snapshot
+            { new: true }
+        );
 
         return res.status(200).json({
             success : true , 
             message : 'file saved successfully', 
+        })
+    }
+    catch(err){
+        console.error(err) ; 
+        return res.status(500).json({
+            success : false , 
+            message : 'ISE' , 
+            error : err.message  ,
+        })
+    }
+}
+exports.joinByRoomId = async (req ,res) => { 
+
+    try{
+        const {projectId} = req.body ; 
+        const userId = req.user.id ; 
+
+        //if user is already present . 
+        const isPresent = await Project.findOne({
+            _id : projectId , 
+            members : userId ,
+        }) ; 
+        const isAdmin = await Project.findOne({
+            _id : projectId , 
+            admin : userId , 
+        })
+
+        if(isPresent || isAdmin){
+            return res.status(200).json({
+                success : false , 
+                message : 'you are already a member of this project', 
+            })
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId , 
+            {
+                $push:{
+                    projectCollaborated : projectId ,
+                }
+            }
+        )
+
+        const updatedProject = await Project.findByIdAndUpdate(
+            projectId , 
+            {
+                $push : {
+                    members : userId , 
+                }
+            }
+        )
+
+        return res.status(200).json({
+            success : true , 
+            message : 'Room joined Successfully', 
+        })
+
+
+    }
+    catch(err){
+        console.error(err) ; 
+        return res.status(500).json({
+            success : false , 
+            message : 'ISE' , 
+            error : err.message  ,
+        })
+    }
+}
+
+exports.addActiveUser = async (req ,res) => { 
+    try{
+        const {projectId } = req.body ; 
+        const userId = req.user.id; 
+
+        console.log("projectID " , projectId) ;
+        console.log("userID " , userId) ;
+
+        const randomColor = `rgb(${Math.floor(Math.random()*200)+55},${Math.floor(Math.random()*200)+55},${Math.floor(Math.random()*200)+55})`;
+        const updatedProject = await Project.findByIdAndUpdate(projectId , 
+            {
+                $addToSet : {
+                    activeUsers : {user: userId, cursorColor: randomColor } ,
+                }
+            },
+            {new : true } 
+        )
+
+        console.log("project upadted") ; 
+
+        return res.status(200).json({
+            success : true , 
+            message : 'Added to active member',
+            project : updatedProject ,
+        })
+        
+    }
+    catch(err){
+        console.error(err) ; 
+        return res.status(500).json({
+            success : false , 
+            message : 'ISE' , 
+            error : err.message  ,
+        })
+    }
+}
+
+exports.removeActiveUser = async (req ,res) => { 
+
+    try{
+        const {projectId} = req.body ; 
+        const userId = req.user.id ; 
+
+        console.log("projectID " , projectId) ;
+        console.log("userID " , userId) ;
+
+        const updatedProject = await Project.findByIdAndUpdate(projectId , 
+            {
+                $pull : {
+                    activeUsers  : { user: userId }
+                }
+            },
+            {new : true } 
+        )
+
+        console.log("user removed ") ; 
+        return res.status(200).json({
+            success : true , 
+            message : 'user removed from active user',
+            project : updatedProject  
+        })
+    }
+    catch(err){
+        console.error(err) ; 
+        return res.status(500).json({
+            success : false , 
+            message : 'ISE' , 
+            error : err.message  ,
+        })
+    }
+}
+//remove this later 
+exports.deleteProject = async (req ,res) => { 
+
+    try{
+
+        const p = "68694c639b0764e03169e2bd";
+        const projectId = new mongoose.Types.ObjectId(p);
+        const a = "6861737b5cdd7a3c4f82d220";
+        const admin = new mongoose.Types.ObjectId(a);
+        await User.findByIdAndUpdate( admin, 
+            {
+                $pull : {
+                    projectCreated : projectId , 
+                }
+            }
+        )
+        const m = "68d90b5037d5ceea7ed9eea1";
+        const member = new mongoose.Types.ObjectId(m);
+            await User.findByIdAndUpdate(member, {
+                $pull: { projectCollaborated: projectId },
+            });
+
+        await Project.findByIdAndDelete(projectId) ; 
+
+        return res.status(200).json({
+            success : true , 
+            message : 'project Deleted ', 
         })
     }
     catch(err){
