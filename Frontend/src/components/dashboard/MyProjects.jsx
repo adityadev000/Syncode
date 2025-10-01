@@ -7,6 +7,7 @@ import ProjectCard from './ProjectCard';
 const MyProjects = () => {
 
     const {token} = useSelector((state) => state.auth) ; 
+    const {user} = useSelector((state) => state.user) ; 
     const[projects , setProjects] = useState([]) ; 
     const [loading , setloading] = useState(false) ; 
 
@@ -39,7 +40,7 @@ const MyProjects = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {
                             projects.map(project => (
-                                <ProjectCard  key={project._id} project={project} />
+                                <ProjectCard  key={project._id} project={project} admin ={user}/>
                             ))
                         }
                     </div>

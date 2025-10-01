@@ -18,7 +18,7 @@ const EditorSlice = createSlice({
         trackFileChange(state ,action ){
             const {item , content , projectId} = action.payload ; 
             const val = state.changedFiles.filter(e => e.fileId !== item._id ) ; 
-                if(item.content!==content){
+                {if(item.content!==content)
                     val.push({
                     fileId:item._id,
                     projectId,
@@ -26,6 +26,9 @@ const EditorSlice = createSlice({
                 });
             }   
             state.changedFiles = val;
+        },
+        resetChangedFiles(state ) {
+            state.changedFiles = [] ; 
         },
         setIsFileSynced(state,action){
             state.isfileSynced = action.payload;
@@ -36,5 +39,5 @@ const EditorSlice = createSlice({
 export const {setActiveObject,
 unsetActiveObject,
 trackFileChange,
-setIsFileSynced} = EditorSlice.actions; 
+setIsFileSynced,resetChangedFiles} = EditorSlice.actions; 
 export default EditorSlice.reducer ;  

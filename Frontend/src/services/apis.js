@@ -22,10 +22,13 @@ export const project = {
     CREATE_FILE_API : BASE_URL + "/project/createFile" ,
     DELETE_FILE_API : BASE_URL + "/project/deleteFile" ,
     DELETE_FOLDER_API : BASE_URL + "/project/deleteFolder" ,
-    SAVE_FILE_API : BASE_URL + "/project/saveFile" ,
-    JOIN_ROOM_API : BASE_URL + "/project/joinByRoomId" ,
+    SAVE_ALL_FILE_API : BASE_URL + "/project/saveAllFile" ,
     ADD_ACTIVE_USERS_API : BASE_URL + "/project/addActiveUser" ,
     REMOVE_ACTIVE_USERS_API : BASE_URL + "/project/removeActiveUser" ,
     // remove this later 
     DELETE_PROJECT_API : BASE_URL + "/project/deleteProject" ,
+}
+export const room = {
+    CREATE_ROOM_API : BASE_URL + "/room/createRoom" ,
+    JOIN_ROOM_API : BASE_URL + "/room/joinByRoomId" ,
 }

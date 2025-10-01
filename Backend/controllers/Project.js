@@ -514,78 +514,36 @@ exports.deleteFolder = async (req ,res) => {
     }
 }
 
-exports.saveFile = async (req ,res) => { 
+exports.saveAllFile = async (req ,res) => { 
 
     try{
-        const { fileId } = req.body; 
+        const  {changedFiles}  = req.body; 
+        console.log("changedFiles " , changedFiles ) ;
 
-        const updatedFile = await File.findByIdAndUpdate(
-            fileId,
-            { content: ydocState }, // store the snapshot
-            { new: true }
-        );
-
-        return res.status(200).json({
-            success : true , 
-            message : 'file saved successfully', 
-        })
-    }
-    catch(err){
-        console.error(err) ; 
-        return res.status(500).json({
-            success : false , 
-            message : 'ISE' , 
-            error : err.message  ,
-        })
-    }
-}
-exports.joinByRoomId = async (req ,res) => { 
-
-    try{
-        const {projectId} = req.body ; 
-        const userId = req.user.id ; 
-
-        //if user is already present . 
-        const isPresent = await Project.findOne({
-            _id : projectId , 
-            members : userId ,
-        }) ; 
-        const isAdmin = await Project.findOne({
-            _id : projectId , 
-            admin : userId , 
-        })
-
-        if(isPresent || isAdmin){
+        if( changedFiles.length === 0 ) {
             return res.status(200).json({
                 success : false , 
-                message : 'you are already a member of this project', 
+                message : 'no files are changed', 
             })
         }
+        await Promise.all(
 
-        const updatedUser = await User.findByIdAndUpdate(
-            userId , 
-            {
-                $push:{
-                    projectCollaborated : projectId ,
-                }
-            }
-        )
+            changedFiles.map(async (file) => {
+                const currfile = await File.findById(file.fileId);
+                if (!currfile) return;
 
-        const updatedProject = await Project.findByIdAndUpdate(
-            projectId , 
-            {
-                $push : {
-                    members : userId , 
-                }
-            }
-        )
+                currfile.content = file.content;
+                currfile.modifiedAt = new Date();
 
+                await currfile.save();
+            })
+        );
+
+        console.log("saved All files") ; 
         return res.status(200).json({
             success : true , 
-            message : 'Room joined Successfully', 
+            message : 'All files are saved successfully', 
         })
-
-
     }
     catch(err){
         console.error(err) ; 
@@ -596,14 +554,12 @@ exports.joinByRoomId = async (req ,res) => {
         })
     }
 }
+
 
 exports.addActiveUser = async (req ,res) => { 
     try{
         const {projectId } = req.body ; 
         const userId = req.user.id; 
-
-        console.log("projectID " , projectId) ;
-        console.log("userID " , userId) ;
 
         const randomColor = `rgb(${Math.floor(Math.random()*200)+55},${Math.floor(Math.random()*200)+55},${Math.floor(Math.random()*200)+55})`;
         const updatedProject = await Project.findByIdAndUpdate(projectId , 
@@ -615,7 +571,6 @@ exports.addActiveUser = async (req ,res) => {
             {new : true } 
         )
 
-        console.log("project upadted") ; 
 
         return res.status(200).json({
             success : true , 
@@ -640,9 +595,6 @@ exports.removeActiveUser = async (req ,res) => {
         const {projectId} = req.body ; 
         const userId = req.user.id ; 
 
-        console.log("projectID " , projectId) ;
-        console.log("userID " , userId) ;
-
         const updatedProject = await Project.findByIdAndUpdate(projectId , 
             {
                 $pull : {
@@ -651,8 +603,6 @@ exports.removeActiveUser = async (req ,res) => {
             },
             {new : true } 
         )
-
-        console.log("user removed ") ; 
         return res.status(200).json({
             success : true , 
             message : 'user removed from active user',

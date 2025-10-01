@@ -274,63 +274,6 @@ export async function deleteFolder(data  ,  token) {
     return result ; 
 }
 
-export async function saveFileData(fileId, ydocState, token) {
-    let result = null;
-    const tid = toast.loading("Saving file...");
-
-    try {
-        const response = await apiConnector(
-            "POST",
-            project.SAVE_FILE_API,
-            { fileId, ydocState }, // send as 'ydocState' so backend knows it's Yjs snapshot
-            {
-                Authorization: `Bearer ${token}`,
-            }
-        );
-
-        if (!response.data.success) {
-            throw new Error(response.data.message);
-        }
-
-        result = response.data;
-        console.log("Save FILE RESPONSE:", response);
-        toast.success("File Saved");
-    } catch (err) {
-        console.error(err);
-        toast.error("File cannot be saved");
-    }
-
-    toast.dismiss(tid);
-    return result;
-}
-
-
-export async function joinByRoomId(token , projectId) {
-
-    let result = null ; 
-    const tid = toast.loading("Joining...") ; 
-
-    try{
-        const response = await apiConnector("POST" , project.JOIN_ROOM_API, {projectId} , { 
-            Authorization: `Bearer ${token}` ,
-        } ) ;
-
-        console.log(" JOIN BY ROOM ..." , response) ; 
-        if(!response.data.success){
-            throw new Error(response.data.message ) ; 
-        }
-
-        result = response.data; 
-        toast.success("you have successfully joined this room ") ; 
-
-    }
-    catch(err){
-        console.error(err) ; 
-        toast.error(err.message) ; 
-    }
-    toast.dismiss(tid) ;
-    return result ; 
-}
 
 export async function addActiveUsers(token , projectId) {
 
@@ -376,6 +319,30 @@ export async function removeActiveUsers(token , projectId) {
     catch(err){
         console.error(err) ; 
         toast.error(err.message) ; 
+    }
+    return result ; 
+}
+
+export async function saveAllFile(changedFiles , token ) {
+
+    let result = null ;  
+    console.log("All good coming to save files ") ; 
+    console.log("changed files inside api call " , changedFiles ) ; 
+    try{
+        const response = await apiConnector("POST" , project.SAVE_ALL_FILE_API, {changedFiles} , { 
+            Authorization: `Bearer ${token}` ,
+        } ) ;
+
+        console.log(" SAVE ALL FILES " , response) ; 
+        if(!response.data.success){
+            throw new Error(response.data.message ) ; 
+        }
+
+        result = response.data; 
+
+    }
+    catch(err){
+        console.error(err) ; 
     }
     return result ; 
 }

@@ -6,12 +6,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import {setProject, setProjectLoading} from '../../slices/projectSlice'
 import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 import {setActiveObject} from '../../slices/editorSlice' ; 
+import { getFileIcon } from '../../data/fileIconsProvider';
+import { FaFolder } from 'react-icons/fa';
 
 const EditorSidebar = () => {
 
-    const {projectId , folderId} = useParams() ; 
+    const {projectId } = useParams() ; 
     const {project , projectLoading} = useSelector((state) => state.project) ; 
     const {token} = useSelector((state) => state.auth ) ; 
+    const {user} = useSelector((state) => state.user ) ; 
     const [rootF , setRoot] = useState(null ); 
     const[loading , setLoading] = useState(true) ; 
     const navigate = useNavigate() ; 
@@ -25,6 +28,7 @@ const EditorSidebar = () => {
 
             if(result){
                 dispatch(setProject(result)) 
+
                 
                 const rootFolders = result?.folders.length > 0 ?  result?.folders.filter(item => item?.parentFolderDirectory === 'root') : null  ; 
                 const rootFiles = result?.files.length > 0 ? result?.files.filter(item => item?.parentFolderDirectory === 'root') : null  ; 
@@ -41,7 +45,6 @@ const EditorSidebar = () => {
             dispatch(setProjectLoading(false)) ; 
             setLoading(false) ; 
         }
-console.log("dependencies changed. rerender " ) ; 
 
         fetchProjectDetails() ; 
 
@@ -134,8 +137,8 @@ const FolderView = ({node, onFileClick }) => {
                                         !open ? <IoMdArrowDropdown className='text-3xl'/> : <IoMdArrowDropup className='text-3xl' />
                                     }
                                 </div>
-                                <div className='cursor-pointer'>
-
+                                <div className='cursor-pointer flex  items-center gap-2'>
+                                    {<FaFolder />}
                                     {node.name}
                                 </div>
                             </div>
@@ -160,7 +163,8 @@ const FolderView = ({node, onFileClick }) => {
                         )}
                     </div>
                 ) : (
-                        <div onClick={() => onFileClick(node)} className=' group flex items-center pl-6 cursor-pointer'>
+                        <div onClick={() => onFileClick(node)} className=' group flex items-center gap-2 pl-6 cursor-pointer'>
+                            {getFileIcon(node.name)}
                             {node.name}
                             <div className=' opacity-0 group-hover:opacity-100'>
                                 <Operations file={false} folder={false}  deletee={true} path={node.path} name={node.name} project={project} type='File' />

@@ -7,6 +7,7 @@ import { MonacoBinding } from 'y-monaco';
 import {setIsFileSynced , trackFileChange, unsetActiveObject} from '../../slices/editorSlice'
 import toast from 'react-hot-toast';
 import Spinner from '../common/Spinner';
+import { getLanguageFromFileName } from '../../data/fileNameHelper';
 
 
 const CodeEditor = () => {
@@ -23,6 +24,16 @@ const decorationsRef = useRef(new Map());
 const ydocRef = useRef(null);
 const providerRef = useRef(null);
 const yTextRef = useRef(null);
+const {changedFiles} = useSelector((state) => state.editor ) ; 
+const permission = project?.members.find(obj => obj.user === user._id )?.permission ; 
+let readonly = false ; 
+if(permission === "write" || project?.admin === user._id){
+    readonly = false ; 
+}
+else{
+    readonly = true ; 
+}
+
 function handleUnMountCleanUp(){
     providerRef.current?.awareness?.setLocalState(null);
     providerRef.current?.disconnect();
@@ -174,28 +185,29 @@ if(loader){
 return (
     <div className='h-full w-full'>
         <Editor
-        key={`${activeObject._id}`} // 🔑 Important: force remount on tab change
-        theme='vs-dark'
-        options={{
-        fontSize: 18, // Set editor font size
-        automaticLayout: true,
-        readOnly:(activeObject?.isDeleted ) ,            
-        fontFamily: 'Fira Code',   // Custom font family (if available)
-        fontLigatures: true,       // Enable ligatures (for fonts like Fira Code)
-        lineHeight: 24,            // Line height
-        letterSpacing: 0.5, 
-        }}
-        onChange={(newValue) => {
-        const payload = {
-            projectId:project._id,
-            item:activeObject,
-            content:newValue,
-        }
-        dispatch(trackFileChange(payload));
-        editorContentRef.current = newValue;
-        }}
-        onMount={handleEditorMount}
-    />
+            key={`${activeObject._id}`} // 🔑 Important: force remount on tab change
+            theme='vs-dark'
+            defaultLanguage={getLanguageFromFileName(activeObject.name)}
+            options={{
+            fontSize: 18, // Set editor font size
+            automaticLayout: true,
+            readOnly:((activeObject?.isDeleted ) || readonly) ,            
+            fontFamily: 'Fira Code',   // Custom font family (if available)
+            fontLigatures: true,       // Enable ligatures (for fonts like Fira Code)
+            lineHeight: 24,            // Line height
+            letterSpacing: 0.5, 
+            }}
+            onChange={(newValue) => {
+            const payload = {
+                projectId:project._id,
+                item:activeObject,
+                content:newValue,
+            }
+            dispatch(trackFileChange(payload));
+            editorContentRef.current = newValue;
+            }}
+            onMount={handleEditorMount}
+        />
     </div>
 )
 }

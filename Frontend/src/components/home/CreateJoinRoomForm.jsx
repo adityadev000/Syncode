@@ -2,7 +2,7 @@ import React from 'react'
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { joinByRoomId } from '../../services/operarions/projectApis';
+import { joinByRoomId } from '../../services/operarions/roomApis';
 
 const CreateJoinRoomForm = ({setJoinBtn}) => {
 
@@ -11,7 +11,7 @@ const CreateJoinRoomForm = ({setJoinBtn}) => {
     const navigate = useNavigate() ; 
 
     const onSubmit = async(data) => {
-        const result = await joinByRoomId(token ,data.roomId )  ; 
+        const result = await joinByRoomId(token ,data.roomId , data.roomPassword )  ; 
         
         if(result){
             navigate(`/project/${data.roomId}`) ; 
@@ -39,6 +39,16 @@ const CreateJoinRoomForm = ({setJoinBtn}) => {
                     className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-blue-500"
                 />
                 {errors.roomId && <p className="text-red-400 text-sm mt-1">{errors.roomId.message}</p>}
+            </div>
+            <div>
+                <label className="block mb-1 text-sm">Room password</label>
+                <input
+                    {...register("roomPassword", { required: "Room passsword  is required" })}
+                    type="text"
+                    placeholder="Enter Room Password"
+                    className="w-full px-3 py-2 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-blue-500"
+                />
+                {errors.roomPassword && <p className="text-red-400 text-sm mt-1">{errors.roomId.message}</p>}
             </div>
 
             {/* Submit */}

@@ -16,12 +16,17 @@ const projectSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId , 
         ref : "User" , 
     },
-    members : [
-        {
+    members : [{
+        user : {
             type : mongoose.Schema.Types.ObjectId , 
             ref : "User" , 
+        } , 
+        permission : {
+            type : String , 
+            emun : ["read" , "write"] ,
+            required : true , 
         }
-    ],
+    }],
     activeUsers : [{
         user:{
             type:mongoose.Schema.Types.ObjectId,

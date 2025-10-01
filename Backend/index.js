@@ -8,6 +8,7 @@ const {cloudinaryConnect} = require("./config/cloudinary") ;
 const fileUplaod = require("express-fileupload") ; 
 const userRoutes = require("./routes/User") ; 
 const projectRoutes = require("./routes/Project") ; 
+const roomRoutes = require("./routes/Room") ; 
 
 
 dotenv.config() ; 
@@ -37,6 +38,7 @@ cloudinaryConnect() ;
 
 app.use("/api/v1/user" , userRoutes) ;
 app.use("/api/v1/project" , projectRoutes) ;
+app.use("/api/v1/room" , roomRoutes) ;
 
 
 //default route
