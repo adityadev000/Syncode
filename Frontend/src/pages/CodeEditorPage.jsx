@@ -1,70 +1,113 @@
-import React, { useEffect } from 'react'
-import { Outlet, useNavigate, useParams } from 'react-router-dom'
+import React, { useEffect, useRef } from 'react'
+import { Navigate, Outlet, useNavigate, useParams } from 'react-router-dom'
 import EditorSidebar from '../components/Editor/EditorSidebar'
-import { addActiveUsers, removeActiveUsers, saveAllFile } from '../services/operarions/projectApis'
 import { useDispatch, useSelector } from 'react-redux'
 import { setProject } from '../slices/projectSlice'
 import TopBar from '../components/Editor/TopBar'
 import toast from 'react-hot-toast'
 import { resetChangedFiles } from '../slices/editorSlice'
+import { io } from 'socket.io-client'
+import Spinner from '../components/common/Spinner'
 
 const CodeEditorPage = () => {
 
     const dispatch = useDispatch() ; 
     const {projectId} = useParams() ;
-    const {token} = useSelector((state) => state.auth ) ; 
     const {changedFiles} = useSelector((state) => state.editor) ; 
     const {project} = useSelector((state) => state.project) ;
     const {user} = useSelector((state) => state.user) ;
-    const navigate = useNavigate() ; 
+
+    const changedFilesRef = useRef(changedFiles);
+    const projectRef = useRef(null);
+    const socketRef = useRef(null);
+
+
+    const handleLeaveRoom = () => {
+
+        console.log("HANDLE LEAVE ROOM CALLED ??????????")
+        const data = {
+            projectId : projectId , 
+            userId : user._id , 
+            changedFiles : changedFiles , 
+        }
+        socketRef.current.emit('disconnect_from_room' , data) ; 
+        setTimeout(() => {
+            socketRef.current?.disconnect();
+        }, 100);
+
+    }
+    const newUserJoinHandler = (data) => {
+        const {newUser ,project , newUserDetails} = data ; 
+        console.log("USER JOINED") ; 
+        toast.success(`${newUser} Joined The Session`) ; 
+        dispatch(setProject(project)) ; 
+    }
+    const userLeaveHandler = (data) => {
+        const {newUser ,project , saved } = data ; 
+        dispatch(setProject(project)) ; 
+        toast.success(`${newUser} has Left The Session`) ; 
+        if(saved) dispatch(resetChangedFiles()) ; 
+    }
+
 
     useEffect(() => {
+        changedFilesRef.current = changedFiles ;
+    } ,[changedFiles] ) ;
 
-        const onMount = async() => {                
-                
-                const response = await addActiveUsers(token , projectId ); 
-                if(response){
-                    //dispatch updated project
-                    dispatch(setProject(response) ) ; 
-                    
-                }
-        }
-
-        const onUnMount = async() => {
-
-            const response = await removeActiveUsers(token , projectId ); 
-            if(response){
-                //dispatch updated project
-                dispatch(setProject(response) ) ; 
-
-                if(response.activeUsers.length === 0 ){
-                    console.log("ALL users are disconnected ") ;
-                    console.log("changed files " , changedFiles ) ; 
-                    const result = await saveAllFile(changedFiles , token ) ; 
-
-                    if(result){
-                        toast.success("fileSaved") ; 
-                        dispatch(resetChangedFiles()) ; 
-                    }
-                }
-            }
-        }
-
-        onMount() ; 
-
-        return ()=> {
-
-                (async() => {
-                    await onUnMount().catch(err => console.error(err)); 
-                })() ; 
-        };
-    } ,[] ) ; 
 
     useEffect(() => {
-        // if((project?.admin !== user._id) && (!project?.members.includes(user._id)) ) {
-        //     navigate("/") ; 
-        // }
-    },[]) 
+        projectRef.current = project ;
+    } ,[project?.activeUsers,project] ) ;
+
+    useEffect(() => {
+        const socket  = io(process.env.REACT_APP_SOCKET_IO_BACKEND) ; 
+        socketRef.current = socket ; 
+
+        window.addEventListener('beforeunload',handleLeaveRoom);
+
+        socket.on('connect' , () => {
+            console.log('Socket Io Connection Successful');
+            const data = {
+                projectId:projectId,
+                userId:user._id,
+            };
+            socket.emit('connect_To_Room',data);
+        })
+
+        socket.on('connect_error',()=>{
+            console.log('Some Error in cnnection');
+        })
+
+        socket.on('user-join-room',newUserJoinHandler);
+
+        socket.on('user-leave-room',userLeaveHandler);
+
+        socket.on("disconnect", () => {
+            console.log('Socket Io Disconnected Successfully');
+        });
+
+
+
+        return () => {
+            socket.off('user-join-room',newUserJoinHandler);
+            socket.off('user-leave-room',userLeaveHandler);
+            // socket.off('updateRoomPermissions',handlePermissionUpdate);
+            handleLeaveRoom();
+            window.removeEventListener('beforeunload',handleLeaveRoom);
+        }
+
+    } ,[user , projectId] ) ;
+
+    //for the projected route for members. 
+    if (!project) {
+        return <Spinner />;
+    }
+    // if(project && (project.members?.filter(ele => ele.user._id === user._id)?.length===0) && ((project.admin?._id!==user._id))){
+
+    //     toast.error('Your Are Not Permitted in The Room');
+    //     return <Navigate to={'/'}/>
+    // }
+
     return (
         <div className='flex flex-col justify-end w-screen min-h-[calc(100vh-3.5rem)]'>
             <div className='h-[3rem] border border-yellow-200'>

@@ -514,110 +514,135 @@ exports.deleteFolder = async (req ,res) => {
     }
 }
 
-exports.saveAllFile = async (req ,res) => { 
+// exports.saveAllFile = async (req ,res) => { 
 
-    try{
-        const  {changedFiles}  = req.body; 
-        console.log("changedFiles " , changedFiles ) ;
+//     try{
+//         const  {changedFiles}  = req.body; 
+//         console.log("changedFiles " , changedFiles ) ;
 
-        if( changedFiles.length === 0 ) {
-            return res.status(200).json({
-                success : false , 
-                message : 'no files are changed', 
-            })
-        }
-        await Promise.all(
+//         if( changedFiles.length === 0 ) {
+//             return res.status(200).json({
+//                 success : false , 
+//                 message : 'no files are changed', 
+//             })
+//         }
+//         await Promise.all(
 
-            changedFiles.map(async (file) => {
-                const currfile = await File.findById(file.fileId);
-                if (!currfile) return;
+//             changedFiles.map(async (file) => {
+//                 const currfile = await File.findById(file.fileId);
+//                 if (!currfile) return;
 
-                currfile.content = file.content;
-                currfile.modifiedAt = new Date();
+//                 currfile.content = file.content;
+//                 currfile.modifiedAt = new Date();
 
-                await currfile.save();
-            })
-        );
+//                 await currfile.save();
+//             })
+//         );
 
-        console.log("saved All files") ; 
-        return res.status(200).json({
-            success : true , 
-            message : 'All files are saved successfully', 
-        })
-    }
-    catch(err){
-        console.error(err) ; 
-        return res.status(500).json({
-            success : false , 
-            message : 'ISE' , 
-            error : err.message  ,
-        })
-    }
-}
-
-
-exports.addActiveUser = async (req ,res) => { 
-    try{
-        const {projectId } = req.body ; 
-        const userId = req.user.id; 
-
-        const randomColor = `rgb(${Math.floor(Math.random()*200)+55},${Math.floor(Math.random()*200)+55},${Math.floor(Math.random()*200)+55})`;
-        const updatedProject = await Project.findByIdAndUpdate(projectId , 
-            {
-                $addToSet : {
-                    activeUsers : {user: userId, cursorColor: randomColor } ,
-                }
-            },
-            {new : true } 
-        )
+//         console.log("saved All files") ; 
+//         return res.status(200).json({
+//             success : true , 
+//             message : 'All files are saved successfully', 
+//         })
+//     }
+//     catch(err){
+//         console.error(err) ; 
+//         return res.status(500).json({
+//             success : false , 
+//             message : 'ISE' , 
+//             error : err.message  ,
+//         })
+//     }
+// }
 
 
-        return res.status(200).json({
-            success : true , 
-            message : 'Added to active member',
-            project : updatedProject ,
-        })
+// exports.addActiveUser = async (req ,res) => { 
+//     try{
+//         const {projectId } = req.body ; 
+//         const userId = req.user.id; 
+
+//         const randomColor = `rgb(${Math.floor(Math.random()*200)+55},${Math.floor(Math.random()*200)+55},${Math.floor(Math.random()*200)+55})`;
+//         const updatedProject = await Project.findByIdAndUpdate(projectId , 
+//             {
+//                 $addToSet : {
+//                     activeUsers : {user: userId, cursorColor: randomColor } ,
+//                 }
+//             },
+//             {new : true } 
+//         )
+
+
+//         return res.status(200).json({
+//             success : true , 
+//             message : 'Added to active member',
+//             project : updatedProject ,
+//         })
         
-    }
-    catch(err){
-        console.error(err) ; 
-        return res.status(500).json({
-            success : false , 
-            message : 'ISE' , 
-            error : err.message  ,
-        })
-    }
-}
+//     }
+//     catch(err){
+//         console.error(err) ; 
+//         return res.status(500).json({
+//             success : false , 
+//             message : 'ISE' , 
+//             error : err.message  ,
+//         })
+//     }
+// }
 
-exports.removeActiveUser = async (req ,res) => { 
+// exports.removeActiveUser = async (req ,res) => { 
 
-    try{
-        const {projectId} = req.body ; 
-        const userId = req.user.id ; 
+//     try{
+//         const {projectId} = req.body ; 
+//         const userId = req.user.id ; 
 
-        const updatedProject = await Project.findByIdAndUpdate(projectId , 
-            {
-                $pull : {
-                    activeUsers  : { user: userId }
-                }
-            },
-            {new : true } 
-        )
-        return res.status(200).json({
-            success : true , 
-            message : 'user removed from active user',
-            project : updatedProject  
-        })
-    }
-    catch(err){
-        console.error(err) ; 
-        return res.status(500).json({
-            success : false , 
-            message : 'ISE' , 
-            error : err.message  ,
-        })
-    }
-}
+//         const updatedProject = await Project.findByIdAndUpdate(projectId , 
+//             {
+//                 $pull : {
+//                     activeUsers  : { user: userId }
+//                 }
+//             },
+//             {new : true } 
+//         )
+//         return res.status(200).json({
+//             success : true , 
+//             message : 'user removed from active user',
+//             project : updatedProject  
+//         })
+//     }
+//     catch(err){
+//         console.error(err) ; 
+//         return res.status(500).json({
+//             success : false , 
+//             message : 'ISE' , 
+//             error : err.message  ,
+//         })
+//     }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //remove this later 
 exports.deleteProject = async (req ,res) => { 
 

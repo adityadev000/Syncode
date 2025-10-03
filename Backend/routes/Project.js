@@ -14,9 +14,6 @@ const {
     createFile,
     deleteFile,
     deleteFolder,
-    saveAllFile,
-    addActiveUser,
-    removeActiveUser,
     deleteProject,
 
 
@@ -32,9 +29,12 @@ router.post("/createFolder" , auth , createFolder) ;
 router.post("/createFile" , auth , createFile) ; 
 router.post("/deleteFile" , auth , deleteFile) ; 
 router.post("/deleteFolder" , auth , deleteFolder) ; 
-router.post("/saveAllFile" , auth , saveAllFile) ; 
-router.post("/addActiveUser" , auth , addActiveUser) ; 
-router.post("/removeActiveUser" , auth , removeActiveUser) ; 
+
+
+
+
+
+
 //remove this later
 router.post("/deleteProject"  , deleteProject) ; 
 

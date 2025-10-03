@@ -9,6 +9,8 @@ const fileUplaod = require("express-fileupload") ;
 const userRoutes = require("./routes/User") ; 
 const projectRoutes = require("./routes/Project") ; 
 const roomRoutes = require("./routes/Room") ; 
+const setUpSocketIo = require("./config/socketIOconfig") ; 
+const http = require('http');
 
 
 dotenv.config() ; 
@@ -23,8 +25,7 @@ app.use(cookieParser()) ;
 app.use(
     cors({
         // origin : "https://syncode-lovat.vercel.app" , 
-        origin : "http://localhost:3000" , 
-
+        origin : process.env.FRONTEND_URL , 
         credentials : true , 
     })
 )
@@ -34,8 +35,13 @@ app.use(
         tempFileDir : "/tmp/" 
     })
 )
-cloudinaryConnect() ;
 
+
+const server = http.createServer(app);
+setUpSocketIo(server);
+
+
+cloudinaryConnect() ;
 app.use("/api/v1/user" , userRoutes) ;
 app.use("/api/v1/project" , projectRoutes) ;
 app.use("/api/v1/room" , roomRoutes) ;
@@ -51,7 +57,7 @@ app.get("/" , (req, res) => {
 
 
 //activate server
-app.listen(PORT , () => {
+server.listen(PORT , () => {
     console.log(`App is running at port ${PORT}`) 
 })
 

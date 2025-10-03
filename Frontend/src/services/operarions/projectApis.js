@@ -275,74 +275,74 @@ export async function deleteFolder(data  ,  token) {
 }
 
 
-export async function addActiveUsers(token , projectId) {
+// export async function addActiveUsers(token , projectId) {
 
-    let result = null ;  
+//     let result = null ;  
 
-    try{
-        const response = await apiConnector("POST" , project.ADD_ACTIVE_USERS_API, {projectId} , { 
-            Authorization: `Bearer ${token}` ,
-        } ) ;
+//     try{
+//         const response = await apiConnector("POST" , project.ADD_ACTIVE_USERS_API, {projectId} , { 
+//             Authorization: `Bearer ${token}` ,
+//         } ) ;
 
-        console.log(" ADD ACTIVE USER ..." , response) ; 
-        if(!response.data.success){
-            throw new Error(response.data.message ) ; 
-        }
+//         console.log(" ADD ACTIVE USER ..." , response) ; 
+//         if(!response.data.success){
+//             throw new Error(response.data.message ) ; 
+//         }
 
-        result = response.data.project; 
+//         result = response.data.project; 
 
-    }
-    catch(err){
-        console.error(err) ; 
-        toast.error(err.message) ; 
-    }
-    return result ; 
-}
+//     }
+//     catch(err){
+//         console.error(err) ; 
+//         toast.error(err.message) ; 
+//     }
+//     return result ; 
+// }
 
-export async function removeActiveUsers(token , projectId) {
+// export async function removeActiveUsers(token , projectId) {
 
-    let result = null ;  
+//     let result = null ;  
 
-    try{
-        const response = await apiConnector("POST" , project.REMOVE_ACTIVE_USERS_API, {projectId} , { 
-            Authorization: `Bearer ${token}` ,
-        } ) ;
+//     try{
+//         const response = await apiConnector("POST" , project.REMOVE_ACTIVE_USERS_API, {projectId} , { 
+//             Authorization: `Bearer ${token}` ,
+//         } ) ;
 
-        console.log(" REMOVE ACTIVE USER ..." , response) ; 
-        if(!response.data.success){
-            throw new Error(response.data.message ) ; 
-        }
+//         console.log(" REMOVE ACTIVE USER ..." , response) ; 
+//         if(!response.data.success){
+//             throw new Error(response.data.message ) ; 
+//         }
 
-        result = response.data.project; 
+//         result = response.data.project; 
 
-    }
-    catch(err){
-        console.error(err) ; 
-        toast.error(err.message) ; 
-    }
-    return result ; 
-}
+//     }
+//     catch(err){
+//         console.error(err) ; 
+//         toast.error(err.message) ; 
+//     }
+//     return result ; 
+// }
 
-export async function saveAllFile(changedFiles , token ) {
+// export async function saveAllFile(changedFiles , token ) {
 
-    let result = null ;  
-    console.log("All good coming to save files ") ; 
-    console.log("changed files inside api call " , changedFiles ) ; 
-    try{
-        const response = await apiConnector("POST" , project.SAVE_ALL_FILE_API, {changedFiles} , { 
-            Authorization: `Bearer ${token}` ,
-        } ) ;
+//     let result = null ;  
+//     console.log("All good coming to save files ") ; 
+//     console.log("changed files inside api call " , changedFiles ) ; 
+//     try{
+//         const response = await apiConnector("POST" , project.SAVE_ALL_FILE_API, {changedFiles} , { 
+//             Authorization: `Bearer ${token}` ,
+//         } ) ;
 
-        console.log(" SAVE ALL FILES " , response) ; 
-        if(!response.data.success){
-            throw new Error(response.data.message ) ; 
-        }
+//         console.log(" SAVE ALL FILES " , response) ; 
+//         if(!response.data.success){
+//             throw new Error(response.data.message ) ; 
+//         }
 
-        result = response.data; 
+//         result = response.data; 
 
-    }
-    catch(err){
-        console.error(err) ; 
-    }
-    return result ; 
-}
+//     }
+//     catch(err){
+//         console.error(err) ; 
+//     }
+//     return result ; 
+// }
