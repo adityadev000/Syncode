@@ -21,7 +21,7 @@ const CreateModal = ({modalData , setModalData}) => {
         if(modalData.opr === "rename"){
 
             if(modalData.type === "Project"){
-
+                //project rename pending 
             }
             else if (modalData.type === "Folder"){
                 const res = {
@@ -64,6 +64,7 @@ const CreateModal = ({modalData , setModalData}) => {
             navigate(`/project/${projectId}/folder/${folderId}/file/${result._id}`) ;
             
         }
+        //this is flag for the project has been updated. 
         dispatch(setProjectLoading(true) );
         setModalData(null) ;
     }

@@ -2,6 +2,9 @@ const Project = require("../models/Project");
 const User = require("../models/User");
 const File = require("../models/file");
 const mongoose  = require("mongoose");
+const Folder = require("../models/folder");
+const { getPopulatedProject } = require("../config/Helper/getPopulatedProject");
+
 
 function getRandomRGBColor() {
     const randColor = () => Math.floor(Math.random() * 100) + 50; // Generates 50–149
@@ -15,14 +18,12 @@ exports.handleJoinRoom = async (data , socket) => {
     try {
         const { projectId, userId } = data; 
 
-        const updatedProject = await Project.findByIdAndUpdate(
-            projectId,
-            {
-                $addToSet: {
-                    activeUsers: { user: userId, cursorColor: getRandomRGBColor() },
-                }
-            },
-            { new: true } 
+        if(!projectId || !userId){
+            return ; 
+        }
+        const updatedProject =  await Project.updateOne(
+            { _id: projectId, "activeUsers.user": { $ne: userId } }, // only if userId not in array
+            { $push: { activeUsers: { user: userId, cursorColor: getRandomRGBColor() } } }
         )
         .populate('activeUsers.user')
         .populate('admin')
@@ -53,7 +54,7 @@ exports.handleJoinRoom = async (data , socket) => {
 exports.handleLeaveRoom = async (data , socket ) => { 
 
     try{
-        const {projectId , userId , changedFiles} = data ; 
+        const {projectId , userId , changedFiles} = data ;
         const updatedProject = await Project.findByIdAndUpdate(projectId , 
             {
                 $pull : {
@@ -71,31 +72,32 @@ exports.handleLeaveRoom = async (data , socket ) => {
 
         if(updatedProject.activeUsers.length === 0 ){
 
+            console.log("changed files" , changedFiles) ; 
             saved = true ; 
 
             await Promise.all(
 
                 changedFiles.map(async (file) => {
 
-                    const currfile = await File.findById(file._id);
-                    if (!currfile) return;
+                    const currfile = await File.findByIdAndUpdate(file.fileId , 
+                        {
+                            content : file.content ,
+                            modifiedAt : new Date(), 
+                        } , 
+                        {new : true } ,
+                    )
 
-                    currfile.content = file.content;
-                    currfile.modifiedAt = new Date();
-
-                    await currfile.save();
-
-
+                    console.log("current file saved" , currfile) ; 
                     const res = {
                         currfile,
                         type:'file',
                     }
-                    socket.to(projectId).emit('fileChnagedSocketRes',res)
+                    socket.to(projectId).emit('fileChnagedSocketRes',res) ;
                 })
 
             );
         }
-console.log("SavED ALL FILES") ; 
+console.log("SavED ALL FILES",  new Date() ) ; 
 
         const user = await User.findById(userId);
 
@@ -111,5 +113,34 @@ console.log("SavED ALL FILES") ;
     catch(err){
         console.error(err.message);
         console.log('Some Error Occurred in Socket Io handler leave room'); 
+    }
+}
+
+exports.handleProjectSync = async (data , socket) => { 
+
+    try{
+        const {projectId} = data ; 
+
+        if(!projectId ){
+            return ; 
+        }
+
+        const project = await getPopulatedProject(projectId) ; 
+
+        socket.join(projectId);
+
+        const body = {
+            updatedProject : project , 
+        }
+
+        socket.to(projectId).emit('project-updated-details', body);
+
+        socket.emit('project-updated-details', body); 
+
+
+    }
+    catch(err){
+        console.log(err.message);
+        console.log('Some Problem in socket io handler to sync project');
     }
 }

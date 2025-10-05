@@ -1,5 +1,37 @@
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { deleteFile, deleteFolder } from "../../services/operarions/projectApis";
+import { setProjectLoading } from "../../slices/projectSlice";
 
-const ConfirmationModal = ({modalData}) => {
+const ConfirmationModal = ({modalData , setConfirmationModal}) => {
+    const {folderId , projectId , fileId } = useParams() ;
+    const {token} = useSelector((state) => state.auth ) ; 
+	const dispatch = useDispatch() ; 
+	const navigate = useNavigate() ; 
+    const deleteHandler = async() => {
+            //delete
+            console.log("delete handler called " ) ; 
+    
+            const res = {
+                fileId , 
+                folderId , 
+                parentFolder :  folderId , 
+                projectId ,
+            }
+            console.log("res = " , res ) ; 
+            if(modalData.type === "File"){
+                await deleteFile(res , token) ; 
+                navigate(`/project/${projectId}/folder/${folderId}`) ; 
+            }
+            else{
+                await deleteFolder(res , token ) ; 
+                navigate(`/project/${projectId}`) ; 
+            }
+    
+            dispatch(setProjectLoading(true)) ;
+            setConfirmationModal(null) ;
+        }
+
     return (   
         <div className=' font-bold text-white w-[calc(100vw-1rem)] h-[calc(100vh-3.5rem)]  flex items-center justify-center fixed top-0 left-0 backdrop-blur-sm z-40 '>
             <div className=' bg-richblack-800 px-5 py-6 rounded-md border border-richblack-400 flex gap-5 flex-col'>
@@ -11,7 +43,7 @@ const ConfirmationModal = ({modalData}) => {
                 </p>
                 <div className='flex gap-4'>
 
-                    <button onClick={modalData.btn1Handler} className="flex gap-2 items-center justify-center bg-blue-500 h-fit px-5 py-2 rounded-md text-base text-richblack-800 font-semibold">
+                    <button onClick={deleteHandler} className="flex gap-2 items-center justify-center bg-blue-500 h-fit px-5 py-2 rounded-md text-base text-richblack-800 font-semibold">
                         {modalData?.btn1Text}
                     </button>
                     <button onClick={modalData.btn2Handler} className=' bg-richblack-600  h-fit px-5 py-2 rounded-md  text-richblack-50 text-[1rem] font-semibold'>

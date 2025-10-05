@@ -8,8 +8,9 @@ import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 import {setActiveObject} from '../../slices/editorSlice' ; 
 import { getFileIcon } from '../../data/fileIconsProvider';
 import { FaFolder } from 'react-icons/fa';
+import toast from 'react-hot-toast';
 
-const EditorSidebar = () => {
+const EditorSidebar = ({socket}) => {
 
     const {projectId } = useParams() ; 
     const {project , projectLoading} = useSelector((state) => state.project) ; 
@@ -19,8 +20,38 @@ const EditorSidebar = () => {
     const[loading , setLoading] = useState(true) ; 
     const navigate = useNavigate() ; 
     const dispatch = useDispatch() ; 
+    const [permission , setpermission] = useState(true) ; 
+    
+    
+
+    const projectSyncHandler =(payload) => {
+
+        const {updatedProject} = payload ; 
+
+        toast.success("project updated ") ; 
+
+        dispatch(setProject(updatedProject)) ; 
+
+        console.log("updated project " , updatedProject) ; 
+
+        let rootFolders = updatedProject?.folders.length > 0 ?  updatedProject?.folders.filter(item => item?.parentFolderDirectory === 'root') : null  ; 
+        let rootFiles = updatedProject?.files.length > 0 ? updatedProject?.files.filter(item => item?.parentFolderDirectory === 'root') : null  ; 
+
+        setRoot({ rootFolders , rootFiles  }) ;
+    }
 
     useEffect(() => {
+        if(projectLoading){
+            // project is updated. 
+            const emitData = {
+                projectId : projectId , 
+            }
+            socket.emit('project_updated' , emitData ) ; 
+
+            dispatch(setProjectLoading(false)) ; 
+        }
+
+        socket.on('project-updated-details' , projectSyncHandler ) ; 
 
         async function fetchProjectDetails() {
             setLoading(true) ; 
@@ -33,19 +64,16 @@ const EditorSidebar = () => {
                 const rootFolders = result?.folders.length > 0 ?  result?.folders.filter(item => item?.parentFolderDirectory === 'root') : null  ; 
                 const rootFiles = result?.files.length > 0 ? result?.files.filter(item => item?.parentFolderDirectory === 'root') : null  ; 
 
-                const data = {
-                    rootFolders , 
-                    rootFiles , 
-                }
 
-                setRoot(data) ; 
+
+                setRoot({ rootFolders , rootFiles  }) ;
 
             }
 
             dispatch(setProjectLoading(false)) ; 
             setLoading(false) ; 
         }
-
+        
         fetchProjectDetails() ; 
 
     },[projectId , projectLoading] ) ; 
@@ -57,17 +85,32 @@ const EditorSidebar = () => {
             navigate(`/project/${projectId}/file/${file._id}`)
         }
         else{
-            dispatch(setActiveObject(file)) ; 
             navigate(`/project/${projectId}/folder/${file.parentFolder}/file/${file._id}`) ; 
         } 
+        dispatch(setActiveObject(file)) ; 
     }
+    useEffect(() => {
+        project?.members?.map((users) => {
+            if(users.admin === user._id){
+                setpermission(true) ; 
+            }
+            else if(users.user === user._id) {
+                if(users.permission === 'read'){
+                    setpermission(false) ; 
+                }
+                else{
+                    setpermission(true) ; 
+                }
+            }
+        })
+    } , [user] ) ; 
     if(loading){
         return (
             <div>Loading...</div>
         )
 
     }
-    if(project == null ){
+    if(!project  ){
         return (
             <div>no file found</div>
         )
@@ -78,8 +121,9 @@ const EditorSidebar = () => {
 
                 <div className='group flex gap-2'>
 
-                    <div className=' uppercase cursor-pointer'>{project.name}</div>
-                    <div className=' opacity-0 group-hover:opacity-100'>
+                    <div className=' uppercase cursor-pointer group'>{project.name}</div>
+                    
+                    <div className={`opacity-0 ${permission ? 'group-hover:opacity-100' : 'opacity-0'} `}>
 
                         <Operations file={true} folder={true} deletee={false} path="root" name={project.name} project={project} type='Project'/>
                     </div>
@@ -89,18 +133,22 @@ const EditorSidebar = () => {
 
             <div>
                 {
-                    rootF?.rootFolders?.map((item) => (
+                    rootF?.rootFolders &&
+                    [...rootF?.rootFolders]
+                        .sort((a, b) => a.name.localeCompare(b.name)).map((item) => (
                         <div key={item._id}>
                             <div>
-                                <FolderView node={item} onFileClick = {onFileClick}/>
+                                <FolderView node={item} onFileClick = {onFileClick} />
                             </div> 
                         </div>
                     ))
                 }
                 {
-                    rootF?.rootFiles?.map((item) => (
+                    rootF?.rootFiles &&
+                    [...rootF?.rootFiles]
+                        .sort((a, b) => a.name.localeCompare(b.name)).map((item) => (
                         <div key={item._id}>
-                            <FolderView node={item} onFileClick = {onFileClick}/>
+                            <FolderView node={item} onFileClick = {onFileClick} />
                         </div>
                     ))
                 }
@@ -110,11 +158,28 @@ const EditorSidebar = () => {
     )
 }
 
-const FolderView = ({node, onFileClick }) => {
+const FolderView = ({node, onFileClick}) => {
     const [open , setOpen] = useState(true) ;  
     const navigate = useNavigate() ; 
     const {projectId } = useParams() ; 
     const {project } = useSelector((state) => state.project) ; 
+    const {user } = useSelector((state) => state.user) ; 
+    const [permission , setpermission] = useState(true) ; 
+    useEffect(() => {
+            project?.members?.map((users) => {
+                if(users.admin === user._id){
+                    setpermission(true) ; 
+                }
+                else if(users.user === user._id) {
+                    if(users.permission === 'read'){
+                        setpermission(false) ; 
+                    }
+                    else{
+                        setpermission(true) ; 
+                    }
+                }
+            })
+        } , [user] ) ; 
     return (
         <div className=' pl-2'>
             {
@@ -142,20 +207,23 @@ const FolderView = ({node, onFileClick }) => {
                                     {node.name}
                                 </div>
                             </div>
-                            <div className=' opacity-0 group-hover:opacity-100' onClick={() => {if(!open) {setOpen(true) ;  navigate(`/project/${projectId}/folder/${node._id}`) ; } }} >
+                            <div className={`opacity-0 ${permission ? 'group-hover:opacity-100' : 'opacity-0'}   `}onClick={() => {if(!open) {setOpen(true) ;  navigate(`/project/${projectId}/folder/${node._id}`) ; } }} >
                                 <Operations file={true} folder={true} deletee={true} path={node.path} name={node.name} project={project} type='Folder' />
                             </div>
                         </div>
                         {open && (
                                 <div>
-                                {/* sort alphabetically */}
                                     {
-                                        node?.folders?.map((child) => (
+                                        node?.folders &&
+                                        [...node.folders]
+                                            .sort((a, b) => a.name.localeCompare(b.name)).map((child) => (
                                             <FolderView key={child._id} node={child} onFileClick={onFileClick}/>
                                         ))
                                     }
                                     {
-                                        node?.files?.map((child) => (
+                                        node?.files &&
+                                        [...node.files]
+                                            .sort((a, b) => a.name.localeCompare(b.name)).map((child) => (
                                             <FolderView key={child._id} node= {child} onFileClick={onFileClick}/>
                                         ))
                                     }
@@ -163,10 +231,10 @@ const FolderView = ({node, onFileClick }) => {
                         )}
                     </div>
                 ) : (
-                        <div onClick={() => onFileClick(node)} className=' group flex items-center gap-2 pl-6 cursor-pointer'>
+                        <div onClick={() => onFileClick(node)} className=' group flex items-center gap-2 pl-3 cursor-pointer'>
                             {getFileIcon(node.name)}
                             {node.name}
-                            <div className=' opacity-0 group-hover:opacity-100'>
+                            <div className={`opacity-0 ${permission ? 'group-hover:opacity-100 ' : 'opacity-0'}`}>
                                 <Operations file={false} folder={false}  deletee={true} path={node.path} name={node.name} project={project} type='File' />
                             </div>
                         </div>

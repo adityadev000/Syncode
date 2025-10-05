@@ -9,6 +9,7 @@ import { setToken } from '../../slices/authSlice'
 import { setUser } from '../../slices/userSlice'
 import toast from 'react-hot-toast'
 import ConfirmationModal from '../common/ConfirmationModal'
+import LogoutModal from '../common/LogoutModal'
 
 const Sidebar = () => {
     const [confirmationModal , setConfirmationModal] = useState(null) ;
@@ -76,7 +77,7 @@ const Sidebar = () => {
                 </button>
             </div>
             {
-                confirmationModal && (<ConfirmationModal modalData ={confirmationModal} />)
+                confirmationModal && (<LogoutModal modalData ={confirmationModal} />)
             }
         </div>
     )

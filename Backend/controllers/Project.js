@@ -3,43 +3,9 @@ const Folder = require("../models/folder") ;
 const File = require("../models/file") ;
 const User = require("../models/User");
 const mongoose = require("mongoose");
-
-async function populateFolderRecursively(folderId) {
-
-    const folder = await Folder.findById(folderId)
-    ?.populate("files")
-    ?.populate("folders")
+const { getPopulatedProject } = require("../config/Helper/getPopulatedProject");
 
 
-    if(!folder ){
-        return null ; 
-    }
-
-    const populatedSubFolders = await Promise.all(
-        folder?.folders?.map(subfolder => populateFolderRecursively(subfolder._id))
-
-    )
-
-    folder.folders= populatedSubFolders ; 
-
-    return folder ; 
-
-}
-
-async function getPopulatedProject(projectId) {
-
-    const project = await Project.findById(projectId)?.populate("files") ; 
-    
-    const populatedFolders = await Promise.all(
-        project?.folders.map(folderId => populateFolderRecursively(folderId))  
-    )
-    
-    if(populatedFolders.length > 0 ){
-        project.folders= populatedFolders ; 
-    }
-
-    return project ; 
-}
 exports.getProjectDetails = async (req ,res) => { 
 
     try{
@@ -437,7 +403,7 @@ const deleteAllFolder = async (folder , projectId) => {
 
         for(const subFolderId of folder?.folders){
             const subFolder = await Folder.findById(subFolderId);
-            deleteAllFolder(subFolder , projectId) ; 
+            await deleteAllFolder(subFolder , projectId) ; 
         }
     }
 
@@ -483,10 +449,13 @@ exports.deleteFolder = async (req ,res) => {
             })
         }
         console.log("folder iD " , folderId ) ; 
-        const mainFolder = await Folder.findById(folderId) ; 
-        console.log("main folder = " , mainFolder ) ; 
-        deleteAllFolder(mainFolder , projectId) ; 
+        const mainFolder = await Folder.findById(folderId).populate("folders").populate("files").exec() ; 
 
+        await deleteAllFolder(mainFolder , projectId) ; 
+
+
+        console.log("main folder = " , mainFolder ) ; 
+        
         if(parentFolder !== undefined  ){
             await Folder.findByIdAndUpdate(
                 parentFolder , 
@@ -502,6 +471,7 @@ exports.deleteFolder = async (req ,res) => {
         return res.status(200).json({
             success : true , 
             message : 'Folder Deleted Successfully',
+
         })
     }
     catch(err){
