@@ -21,11 +21,15 @@ exports.handleJoinRoom = async (data , socket) => {
         if(!projectId || !userId){
             return ; 
         }
-        const updatedProject =  await Project.updateOne(
+        await Project.updateOne(
             { _id: projectId, "activeUsers.user": { $ne: userId } }, // only if userId not in array
             { $push: { activeUsers: { user: userId, cursorColor: getRandomRGBColor() } } }
+            ,{new : true } , 
         )
+        
+        const updatedProject = await Project.findById(projectId)
         .populate('activeUsers.user')
+        .populate('members.user')
         .populate('admin')
         .exec();
 
@@ -62,8 +66,11 @@ exports.handleLeaveRoom = async (data , socket ) => {
                 }
             },
             {new : true } ,
-        ).populate('activeUsers.user')
-        .populate('admin').exec() 
+        )
+        .populate('activeUsers.user')
+        .populate('members.user')
+        .populate('admin')
+        .exec() 
 
         console.log("updated project passed " , updatedProject.activeUsers) ; 
 

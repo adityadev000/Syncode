@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as Y from 'yjs';
 import { WebsocketProvider } from 'y-websocket';
 import { MonacoBinding } from 'y-monaco';
-import {setIsFileSynced , trackFileChange, unsetActiveObject} from '../../slices/editorSlice'
+import {setActiveObject, setIsFileSynced , trackFileChange} from '../../slices/editorSlice'
 import toast from 'react-hot-toast';
 import Spinner from '../common/Spinner';
 import { getLanguageFromFileName } from '../../data/fileNameHelper';
@@ -88,6 +88,9 @@ useEffect(
         provider.destroy();
         ydoc.destroy();
         window.removeEventListener('beforeunload',handleUnMountCleanUp);
+        if (!window.location.pathname.includes('/project')) {
+            dispatch(setActiveObject(null));
+        }
         }
         
     },[activeObject?._id]
@@ -183,7 +186,7 @@ if(loader){
     return <Spinner/>
 }
 return (
-    <div className='h-full w-full'>
+    <div className='h-full w-full absolute z-10'>
         <Editor
             key={`${activeObject._id}`} // 🔑 Important: force remount on tab change
             theme='vs-dark'

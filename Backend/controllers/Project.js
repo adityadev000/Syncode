@@ -117,15 +117,10 @@ exports.renameProjectName = async (req ,res) => {
 
     try{
         const {name , projectId} = req.body ; 
-        const project = await Project.findByIdAndUpdate(
-            projectId , 
-            {
-                name : name , 
-            },
-            {
-                new : true 
-            }
-        )
+        const project = await Project.findById(projectId) ; 
+        project.name  = name ; 
+
+        await project.save() ; 
 
         return res.status(200).json({
             success : true , 

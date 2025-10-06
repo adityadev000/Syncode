@@ -7,6 +7,7 @@ const HeroSection = () => {
     const [btn , setBtn] = useState(false) ; 
     const [joinBtn , setJoinBtn] = useState(false) ; 
 
+
     return (
         <section className="bg-gray-900 text-white  flex flex-col items-center justify-center ">
             <img src={logo}  className='h-40'/>

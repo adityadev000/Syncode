@@ -7,8 +7,8 @@ import toast from 'react-hot-toast'
 import { resetChangedFiles } from '../slices/editorSlice'
 import { io } from 'socket.io-client'
 import Spinner from '../components/common/Spinner'
-import { setProject } from '../slices/projectSlice'
 import { getProjectDetails } from '../services/operarions/projectApis'
+import {  setIsEditorLoads } from '../slices/hamburgerSlice'
 
 const CodeEditorPage = () => {
 
@@ -17,8 +17,8 @@ const CodeEditorPage = () => {
     const {projectId} = useParams() ;
     const {changedFiles} = useSelector((state) => state.editor) ; 
     const {token} = useSelector((state) => state.auth) ; 
-    // const {project} = useSelector((state) => state.project) ;
     const {user} = useSelector((state) => state.user) ;
+    const {editorSideBar} = useSelector((state) => state.hamburger) ;
     const [projectt , setProjectt] = useState(null) ; 
 
     const changedFilesRef = useRef(changedFiles);
@@ -38,25 +38,43 @@ const CodeEditorPage = () => {
         }
         socketRef.current.emit('disconnect_from_room' , data , () => {
 
-            socketRef.current?.disconnect();
+        socketRef.current?.disconnect();
         }) ; 
 
     }
     const newUserJoinHandler = (data) => {
         const {newUser ,project , newUserDetails} = data ; 
         console.log("USER JOINED") ;
-        toast.success(`${newUser} Joined The Session`) ; 
-        setProjectt(project) ;  
+        if(project && project._id){
+            toast.success(`${newUser} Joined The Session`) ; 
+            setProjectt(project) ;  
+        }
+        else{
+            toast.error("invalid project received") ; 
+        }
     }
-    const userLeaveHandler = (data) => {
+    const userLeaveHandler = (data ) => {
         const {newUser ,project , saved } = data ; 
-        toast.success(`${newUser} has Left The Session`) ; 
-        setProjectt(project) ;  
+        if(project && project._id){
+
+            toast.success(`${newUser} has Left The Session`) ; 
+            setProjectt(project) ;  
+        }
+        else{
+            toast.error("invalid project received") ; 
+        }
         if(saved) {
             toast.success("all files are saved") ; 
             dispatch(resetChangedFiles()) ; 
         }
     }
+
+    useEffect(() => {
+        dispatch(setIsEditorLoads(true)); 
+        return () => {
+            dispatch(setIsEditorLoads(false)); 
+        }
+    } ,[] )
 
 
     useEffect(() => {
@@ -113,7 +131,6 @@ const CodeEditorPage = () => {
         });
 
         
-
         return () => {
             socket.off('user-join-room',newUserJoinHandler);
             socket.off('user-leave-room',userLeaveHandler);
@@ -125,35 +142,31 @@ const CodeEditorPage = () => {
     } ,[user , projectId] ) ;
 
     //for the projected route for members. 
+    useEffect(() => {
+        console.log("project in edior page " , projectt) ; 
+    })
     if (!projectt ) {
         return <Spinner />;
-    }
-    // {
-    //     const isMember = project?.members?.some(member => member?.user === user?._id )
-    //     let isAdmin = (project?.admin.toString() === user?._id?.toString()) ; 
-
-    //     if(project  &&(  (!isMember ) && (!isAdmin )  )  ){
-    //         toast.error('Your Are Not Permitted in The Room');
-    //         return <Navigate to={'/'}/>
-    //     }
-    // }
-        
+    }   
 
     return (
-        <div className='flex flex-col justify-end w-screen min-h-[calc(100vh-3.5rem)]'>
-            <div className='h-[3rem] border border-yellow-200'>
-                <TopBar/>
+        <div className='flex flex-col justify-end w-screen min-h-[calc(100vh-3.5rem)] overflow-y-auto'>
+            <div className={`min-h-fit ${editorSideBar ? 'md:w-[calc(100vw-320px)] w-full md:ml-[320px] ml-0  hidden sm:block' : 'w-full ml-0' } fixed top-[3.5rem] left-0 px-2 md:px-6  z-20 overflow-y-auto bg-gray-800 rounded-md py-2`} >
+                <TopBar socket={socketRef?.current}  userId={user._id} projectId={projectId} changedFiles={changedFilesRef.current} setProjectt={setProjectt} project={projectt}
+                    editorSideBar={editorSideBar}
+                />
 
             </div>
-            <div className='flex  justify-end w-screen min-h-[calc(100vh-5.5rem)]'>
+            <div className='flex  justify-end w-screen overflow-y-auto relative'>
                 <div
-                    className={`h-screen hidden  md:block fixed top-[7.5rem] left-0 min-w-[300px]  border-r border-r-richblack-700 transition-all duration-300 z-20  px-3`}
+                    className={`h-[calc(100vh-3.5rem)] ${editorSideBar ? 'block' : 'hidden'} fixed top-[3.5rem] left-0 min-w-[300px]  border-r border-r-richblack-700 transition-all duration-300 z-20  px-3 py-2 overflow-y-auto bg-gray-800 `}
                 >
                     <EditorSidebar socket ={socketRef?.current}/>
                 </div>
                 <div
-                    className='h-[calc(100vh-4rem)] w-full md:w-[calc(100vw-320px)] text-white py-8 pr-4'
+                    className={`h-[calc(100vh-9rem)] ${editorSideBar ? 'md:w-[calc(100vw-320px)] w-full mt-10'  : 'w-full'} text-white py-8 pr-4 z-10 `}
                 >
+                    
                     <Outlet/>
                 </div>
             </div>

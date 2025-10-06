@@ -69,7 +69,7 @@ const MyProfile = () => {
 
 
     return (
-        <div className="min-h-screen bg-gray-950 text-white  flex justify-center">
+        <div className="h-full bg-gray-950 text-white  flex justify-center">
             <div className="bg-gray-900  rounded-xl w-full max-w-xl shadow-lg">
                 <h2 className="text-2xl font-bold mb-6 text-center">My Profile</h2>
 

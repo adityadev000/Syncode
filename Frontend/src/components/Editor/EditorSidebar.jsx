@@ -9,6 +9,7 @@ import {setActiveObject} from '../../slices/editorSlice' ;
 import { getFileIcon } from '../../data/fileIconsProvider';
 import { FaFolder } from 'react-icons/fa';
 import toast from 'react-hot-toast';
+import { VscProject } from 'react-icons/vsc';
 
 const EditorSidebar = ({socket}) => {
 
@@ -116,22 +117,22 @@ const EditorSidebar = ({socket}) => {
         )
     }
     return (
-        <div>
+        <div className=' overflow-y-auto text-lg'>
             <div className='flex gap-2 '>
 
-                <div className='group flex gap-2'>
+                <div className='group flex gap-2 items-center'>
 
+                    <VscProject />
                     <div className=' uppercase cursor-pointer group'>{project.name}</div>
                     
                     <div className={`opacity-0 ${permission ? 'group-hover:opacity-100' : 'opacity-0'} `}>
-
                         <Operations file={true} folder={true} deletee={false} path="root" name={project.name} project={project} type='Project'/>
                     </div>
                 </div>
 
             </div>
 
-            <div>
+            <div className=''>
                 {
                     rootF?.rootFolders &&
                     [...rootF?.rootFolders]
@@ -161,7 +162,7 @@ const EditorSidebar = ({socket}) => {
 const FolderView = ({node, onFileClick}) => {
     const [open , setOpen] = useState(true) ;  
     const navigate = useNavigate() ; 
-    const {projectId } = useParams() ; 
+    const {projectId , fileId} = useParams() ; 
     const {project } = useSelector((state) => state.project) ; 
     const {user } = useSelector((state) => state.user) ; 
     const [permission , setpermission] = useState(true) ; 
@@ -231,9 +232,11 @@ const FolderView = ({node, onFileClick}) => {
                         )}
                     </div>
                 ) : (
-                        <div onClick={() => onFileClick(node)} className=' group flex items-center gap-2 pl-3 cursor-pointer'>
+                        <div onClick={() => onFileClick(node)} className={`group flex items-center gap-2 pl-3 cursor-pointer `}>
                             {getFileIcon(node.name)}
-                            {node.name}
+                            <p className={`${fileId === node._id  ? 'text-blue-100' : 'text-white' }`}>
+                                {node.name}
+                            </p>
                             <div className={`opacity-0 ${permission ? 'group-hover:opacity-100 ' : 'opacity-0'}`}>
                                 <Operations file={false} folder={false}  deletee={true} path={node.path} name={node.name} project={project} type='File' />
                             </div>

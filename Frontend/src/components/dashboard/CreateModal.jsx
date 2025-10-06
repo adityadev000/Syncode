@@ -20,8 +20,13 @@ const CreateModal = ({modalData , setModalData}) => {
 
         if(modalData.opr === "rename"){
 
+            const res = {
+                name : data.name , 
+                projectId
+            }
             if(modalData.type === "Project"){
                 //project rename pending 
+                await renameProjectName(res ,token) ; 
             }
             else if (modalData.type === "Folder"){
                 const res = {

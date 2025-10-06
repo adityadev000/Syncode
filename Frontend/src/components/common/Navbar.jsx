@@ -1,22 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import LogoName from '../../assets/Syncode_logo_Name.png'
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ProfileDropDown from '../dashboard/ProfileDropdown';
+import { setDashBoardSideBar, setEditorSideBar } from '../../slices/hamburgerSlice';
+import { RxHamburgerMenu } from 'react-icons/rx';
+import { LuFileBox } from 'react-icons/lu';
 
 const Navbar = () => {
 
     const {token} = useSelector((state) => state.auth) ; 
-    const {user} = useSelector((state) => state.user) ; 
+    const {isEditorLoads ,isDashboardLoads , dashBoardSideBar ,editorSideBar } = useSelector((state) => state.hamburger)
 
+    const dispatch = useDispatch() ; 
+    
+    useEffect(() => {
+
+        console.log("dashboard" , dashBoardSideBar) ;
+        console.log("editor" , editorSideBar) ;
+        console.log("dashboardLoad" , isDashboardLoads) ;
+        console.log("editorLoad" , isEditorLoads) ;
+
+    } ,[dashBoardSideBar , editorSideBar ,isDashboardLoads ,  isEditorLoads] ) 
     return (
         <nav className="bg-gray-950 text-white w-full px-6 py-3 flex justify-between items-center shadow-md fixed top-0 z-30 bg-gray-900 border-b border-b-richblack-600">
         {/* Logo */}
-            <div className="text-xl font-bold">
-                {/* <span className="text-blue-500">Syn</span>code */}
-                <Link to='/'>
-                    <img src={LogoName} className=' h-7'/>
-                </Link>
+            <div className=' flex gap-3 items-center'>
+
+                {
+                    isEditorLoads  && (<LuFileBox className=' font-extrabold text-xl' onClick={() => {editorSideBar ? dispatch(setEditorSideBar(false)) : dispatch(setEditorSideBar(true)) }}/>)
+                }
+                {
+                    isDashboardLoads  && (<RxHamburgerMenu onClick={() => {
+                        dashBoardSideBar ? dispatch(setDashBoardSideBar(false)) : dispatch(setDashBoardSideBar(true)) ; 
+                    }} />)
+                }
+                <div className="text-xl font-bold">
+                    {/* <span className="text-blue-500">Syn</span>code */}
+                    <Link to='/'>
+                        <img src={LogoName} className=' h-7'/>
+                    </Link>
+                </div>
             </div>
 
             {/* Navigation Links */}
