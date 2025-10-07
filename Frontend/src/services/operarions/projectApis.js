@@ -4,7 +4,6 @@ import {  project } from "../apis";
 
 
 export async function getProjectDetails(projectId , token) {
-    console.log("project Id " , projectId)
     let result = null ; 
 
     try{
@@ -17,7 +16,7 @@ export async function getProjectDetails(projectId , token) {
         }
 
         result = response.data.project ; 
-        console.log("PROJECT  RESPONSE..." , response.data.project) ; 
+        // console.log("PROJECT  RESPONSE..." , response.data.project) ; 
 
     }
     catch(err){
@@ -41,7 +40,7 @@ export async function getFileContent(fileId , token) {
         }
 
         result = response.data.file ; 
-        console.log("FILE  RESPONSE..." , response) ; 
+        // console.log("FILE  RESPONSE..." , response) ; 
 
     }
     catch(err){
@@ -66,7 +65,7 @@ export async function createProject(data , token) {
         }
 
         result = response.data.project ; 
-        console.log("PROJECT  RESPONSE..." , response) ; 
+        // console.log("PROJECT  RESPONSE..." , response) ; 
         toast.success("Project Created Successfully") ; 
 
     }
@@ -94,7 +93,7 @@ export async function renameProjectName(data  ,  token) {
         }
 
         result = response.data ; 
-        console.log("PROJECT  RESPONSE..." , response) ; 
+        // console.log("PROJECT  RESPONSE..." , response) ; 
         toast.success("Project Renamed Successfully") ; 
 
     }
@@ -122,7 +121,7 @@ export async function renameFileName(data  ,  token) {
         }
 
         result = response.data ; 
-        console.log("PROJECT  RESPONSE..." , response) ; 
+        // console.log("PROJECT  RESPONSE..." , response) ; 
         toast.success("file Renamed Successfully") ; 
 
     }
@@ -150,7 +149,7 @@ export async function renameFolderName(data  ,  token) {
         }
 
         result = response.data ; 
-        console.log("PROJECT  RESPONSE..." , response) ; 
+        // console.log("PROJECT  RESPONSE..." , response) ; 
         toast.success("folder Renamed Successfully") ; 
 
     }
@@ -178,7 +177,7 @@ export async function createFolder(data  ,  token) {
         }
 
         result = response.data.folder; 
-        console.log("Folder  RESPONSE..." , response) ; 
+        // console.log("Folder  RESPONSE..." , response) ; 
         toast.success("folder Created") ; 
 
     }
@@ -206,7 +205,7 @@ export async function createFile(data  ,  token) {
         }
 
         result = response.data.file; 
-        console.log("FILE  RESPONSE..." , response) ; 
+        // console.log("FILE  RESPONSE..." , response) ; 
         toast.success("file Created") ; 
 
     }
@@ -234,7 +233,7 @@ export async function deleteFile(data  ,  token) {
         }
 
         result = response.data; 
-        console.log(" DLETE FILE  RESPONSE..." , response) ; 
+        // console.log(" DLETE FILE  RESPONSE..." , response) ; 
         toast.success("file Deleted") ; 
 
     }
@@ -262,7 +261,7 @@ export async function deleteFolder(data  ,  token) {
         }
 
         result = response.data; 
-        console.log(" DLETE FOLDER  RESPONSE..." , response) ; 
+        // console.log(" DLETE FOLDER  RESPONSE..." , response) ; 
         toast.success("folder Deleted") ; 
 
     }

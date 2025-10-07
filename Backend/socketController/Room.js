@@ -72,14 +72,13 @@ exports.handleLeaveRoom = async (data , socket ) => {
         .populate('admin')
         .exec() 
 
-        console.log("updated project passed " , updatedProject.activeUsers) ; 
 
 
         let saved = false ; 
 
         if(updatedProject.activeUsers.length === 0 ){
 
-            console.log("changed files" , changedFiles) ; 
+
             saved = true ; 
 
             await Promise.all(
@@ -94,7 +93,7 @@ exports.handleLeaveRoom = async (data , socket ) => {
                         {new : true } ,
                     )
 
-                    console.log("current file saved" , currfile) ; 
+
                     const res = {
                         currfile,
                         type:'file',
@@ -104,7 +103,7 @@ exports.handleLeaveRoom = async (data , socket ) => {
 
             );
         }
-console.log("SavED ALL FILES",  new Date() ) ; 
+
 
         const user = await User.findById(userId);
 

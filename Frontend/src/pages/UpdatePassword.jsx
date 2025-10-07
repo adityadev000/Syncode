@@ -24,7 +24,6 @@ const UpdatePassword = () => {
             return ; 
         }
         const updatedData = {...data , token} ; 
-        console.log("UPDATED DATA..." , updatedData) ; 
         const result = await resetPassword(updatedData) ; 
         if(result !== null ){
             navigate("/login" ) ; 

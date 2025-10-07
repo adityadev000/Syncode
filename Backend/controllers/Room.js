@@ -7,7 +7,7 @@ exports.createRoom = async (req ,res) => {
 
     try{
         const {projectId  ,permission} = req.body ; 
-        console.log("project ID" , projectId) ; 
+
         if(!projectId ){
             return res.status(400).json({
                 success : false , 

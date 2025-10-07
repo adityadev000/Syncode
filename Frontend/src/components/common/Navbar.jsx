@@ -13,15 +13,7 @@ const Navbar = () => {
     const {isEditorLoads ,isDashboardLoads , dashBoardSideBar ,editorSideBar } = useSelector((state) => state.hamburger)
 
     const dispatch = useDispatch() ; 
-    
-    useEffect(() => {
 
-        console.log("dashboard" , dashBoardSideBar) ;
-        console.log("editor" , editorSideBar) ;
-        console.log("dashboardLoad" , isDashboardLoads) ;
-        console.log("editorLoad" , isEditorLoads) ;
-
-    } ,[dashBoardSideBar , editorSideBar ,isDashboardLoads ,  isEditorLoads] ) 
     return (
         <nav className="bg-gray-950 text-white w-full px-6 py-3 flex justify-between items-center shadow-md fixed top-0 z-30 bg-gray-900 border-b border-b-richblack-600">
         {/* Logo */}

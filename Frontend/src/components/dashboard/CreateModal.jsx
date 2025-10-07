@@ -16,8 +16,6 @@ const CreateModal = ({modalData , setModalData}) => {
 
     const onSubmit = async(data ) => {
 
-        console.log("modal data " ,modalData) ; 
-
         if(modalData.opr === "rename"){
 
             const res = {
@@ -51,7 +49,6 @@ const CreateModal = ({modalData , setModalData}) => {
                     path : modalData.path , 
                     projectId : projectId , 
                 }
-            console.log("res = " , res ) ; 
             const result = await createFolder(res , token ) ; 
         }
         else{
@@ -61,7 +58,6 @@ const CreateModal = ({modalData , setModalData}) => {
                 path : modalData.path , 
                 projectId : projectId , 
             }
-            console.log("res = " , res ) ; 
             const result = await createFile(res , token ) ;
             if(result.parentFolder === null) {
                 navigate(`/project/${projectId}/file/${result._id}`)

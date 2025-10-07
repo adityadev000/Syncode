@@ -10,9 +10,7 @@ const Dashboard = () => {
     const dispatch = useDispatch() ; 
     useEffect(() => {
         dispatch(setIsDashboardLoads(true)) ; 
-        console.log("dashbord loads") ; 
         return ()=> {
-            console.log("dashboard unload")
             dispatch(setIsDashboardLoads(false)); 
         }
     } ,[] ) 

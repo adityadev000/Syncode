@@ -10,7 +10,6 @@ const ConfirmationModal = ({modalData , setConfirmationModal}) => {
 	const navigate = useNavigate() ; 
     const deleteHandler = async() => {
             //delete
-            console.log("delete handler called " ) ; 
     
             const res = {
                 fileId , 
@@ -18,7 +17,6 @@ const ConfirmationModal = ({modalData , setConfirmationModal}) => {
                 parentFolder :  folderId , 
                 projectId ,
             }
-            console.log("res = " , res ) ; 
             if(modalData.type === "File"){
                 await deleteFile(res , token) ; 
                 navigate(`/project/${projectId}/folder/${folderId}`) ; 

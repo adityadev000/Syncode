@@ -5,12 +5,8 @@ const Project = require("../models/Project") ;
 exports.changeAvtar = async (req ,res) => { 
 
     try{
-        console.log("uploading") ; 
         const {avtar} = req.files ;
-        const userId = req.user.id ; 
 
-        console.log("avtar" , avtar) ;
-        console.log("userid" , userId) ;
 
 
         const user = await User.findById(userId) ; 
@@ -19,7 +15,7 @@ exports.changeAvtar = async (req ,res) => {
         if(iamge_url !== "" || iamge_url !== undefined) {
             await deleteImageToCloudinary(iamge_url) ; 
         }
-        console.log("Deletion success") ;
+
 
         const image = await uploadImageToCloudinary(
             avtar , 
@@ -27,7 +23,7 @@ exports.changeAvtar = async (req ,res) => {
             1000 ,
             1000,
         )
-        console.log("Upload success") ; 
+
 
         const updatedUser = await User.findByIdAndUpdate(
             userId , 
@@ -35,7 +31,6 @@ exports.changeAvtar = async (req ,res) => {
             {new : true } 
         )
 
-        console.log("user updated return rps") ;
 
         return res.status(200).json({
             success : true , 

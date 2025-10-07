@@ -21,7 +21,7 @@ const VerifyEmail = () => {
         }
         setLaoding(true) ; 
         e.preventDefault();
-        console.log('Entered OTP:', otp);
+
         const updatedSignupData = { ...signupData, otp };
 
         const result = await signup(updatedSignupData) ; 
@@ -39,7 +39,6 @@ const VerifyEmail = () => {
         event.preventDefault() ;
         setLaoding(true) ; 
 
-        console.log("SIGNUP DATA>>>" , signupData) ; 
         const result = await sendOtp(signupData) ; 
         if(result != null ){
             toast.success("OTP sent successfully")

@@ -53,7 +53,7 @@ exports.resetPassword = async (req ,res) => {
             })
         }
 
-        console.log("password same passed")
+
         
         
         const user = await User.findOne({token}) ; 
@@ -64,7 +64,7 @@ exports.resetPassword = async (req ,res) => {
                 message : 'Token is Invalid', 
             })
         }
-        console.log("user matched passed" , user ) ; 
+
 
         if(user.resetPasswordExpires < Date.now() ){
             return res.status(200).json({
@@ -78,7 +78,7 @@ exports.resetPassword = async (req ,res) => {
         
         await User.findOneAndUpdate({token} , {password : hashedPassword} , {new :true }) ; 
         
-        console.log("pasword saved " ) ;
+
 
         return res.status(200).json({
             success : true , 

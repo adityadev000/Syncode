@@ -20,7 +20,6 @@ const ProfileDropDown = () => {
         setDashBoard((prev) => !prev);
     }
     useEffect(() => {
-        // console.log("user" , user)
         function handleClickAnywhere(event) {
             if(dropdownref.current && !dropdownref.current.contains(event.target)) 
                 setDashBoard(false) ; 

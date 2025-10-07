@@ -15,7 +15,7 @@ export async function createRoom(projectId , token , permission ) {
         }
 
         result = response.data.data ; 
-        console.log("PROJECT  RESPONSE..." , response.data.data) ; 
+        // console.log("PROJECT  RESPONSE..." , response.data.data) ; 
 
     }
     catch(err){
@@ -36,7 +36,7 @@ export async function joinByRoomId(token , projectId , password) {
             Authorization: `Bearer ${token}` ,
         } ) ;
 
-        console.log(" JOIN BY ROOM ..." , response) ; 
+        // console.log(" JOIN BY ROOM ..." , response) ; 
         if(!response.data.success){
             throw new Error(response.data.message ) ; 
         }

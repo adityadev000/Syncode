@@ -28,8 +28,6 @@ const CodeEditorPage = () => {
 
     const handleLeaveRoom = () => {
 
-        console.log("HANDLE LEAVE ROOM CALLED ??????????") ; 
-        console.log("changed file before a user leaves" , changedFilesRef.currentFiles) ; 
         if (!socketRef.current || !projectId) return;
         const data = {
             projectId : projectId , 
@@ -44,7 +42,7 @@ const CodeEditorPage = () => {
     }
     const newUserJoinHandler = (data) => {
         const {newUser ,project , newUserDetails} = data ; 
-        console.log("USER JOINED") ;
+
         if(project && project._id){
             toast.success(`${newUser} Joined The Session`) ; 
             setProjectt(project) ;  
@@ -142,9 +140,6 @@ const CodeEditorPage = () => {
     } ,[user , projectId] ) ;
 
     //for the projected route for members. 
-    useEffect(() => {
-        console.log("project in edior page " , projectt) ; 
-    })
     if (!projectt ) {
         return <Spinner />;
     }   

@@ -27,7 +27,6 @@ const TopBar = ({socket , projectId , userId , changedFiles,setProjectt,project 
         rightBar ? setRightBar(false) : setRightBar(true) ; 
     }
     const handleLeaveRoom = () => {
-        console.log("leave btn clcicked") ; 
         const data = {
             projectId : projectId , 
             userId : userId , 

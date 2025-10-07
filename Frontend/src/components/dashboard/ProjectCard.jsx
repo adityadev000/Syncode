@@ -25,9 +25,6 @@ const ProjectCard = ({ project , admin}) => {
     }
 
     if(loading){
-        {
-            console.log("data loading") ; 
-        }
         return(<Spinner/>) 
     }
     return (

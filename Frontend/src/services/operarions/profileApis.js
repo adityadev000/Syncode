@@ -20,7 +20,6 @@ export async function changeAvtar(formData , token) {
         }
 
         result = response.data ; 
-        console.log("PROFILE PIC RESPONSE..." , response) ; 
         toast.success("Profile picture changed") ; 
 
     }
@@ -49,7 +48,6 @@ export async function updateProfile(data , token) {
         }
 
         result = response.data ; 
-        console.log("PROFILE  RESPONSE..." , response) ; 
         toast.success("Profile updated") ; 
 
     }
@@ -76,7 +74,6 @@ export async function getUserDetail(token) {
             throw new Error(response.data.message ) ; 
         }
 
-        console.log("updated user  RESPONSE..." , response) ; 
         result = response.data.user ; 
 
     }

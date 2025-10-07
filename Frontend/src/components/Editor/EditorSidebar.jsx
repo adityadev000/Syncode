@@ -33,7 +33,6 @@ const EditorSidebar = ({socket}) => {
 
         dispatch(setProject(updatedProject)) ; 
 
-        console.log("updated project " , updatedProject) ; 
 
         let rootFolders = updatedProject?.folders.length > 0 ?  updatedProject?.folders.filter(item => item?.parentFolderDirectory === 'root') : null  ; 
         let rootFiles = updatedProject?.files.length > 0 ? updatedProject?.files.filter(item => item?.parentFolderDirectory === 'root') : null  ; 
@@ -80,9 +79,7 @@ const EditorSidebar = ({socket}) => {
     },[projectId , projectLoading] ) ; 
 
     const onFileClick = (file) => {
-        console.log("this file clcicked " , file) ; 
         if(file.parentFolderDirectory === "root") {
-            console.log("root file ") ; 
             navigate(`/project/${projectId}/file/${file._id}`)
         }
         else{
