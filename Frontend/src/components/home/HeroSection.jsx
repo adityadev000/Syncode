@@ -35,9 +35,9 @@ const HeroSection = () => {
                     multiple
                     className="hidden"
                 />
-                <div className="bg-green-600 hover:bg-green-700 transition px-6 py-3 rounded-md text-white font-medium">
+                {/* <div className="bg-green-600 hover:bg-green-700 transition px-6 py-3 rounded-md text-white font-medium">
                     Import Project
-                </div>
+                </div> */}
             </label>
         </div>
 

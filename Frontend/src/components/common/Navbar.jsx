@@ -28,10 +28,10 @@ const Navbar = () => {
             <div className=' flex gap-3 items-center'>
 
                 {
-                    isEditorLoads  && (<LuFileBox className=' font-extrabold text-xl' onClick={() => {editorSideBar ? dispatch(setEditorSideBar(false)) : dispatch(setEditorSideBar(true)) }}/>)
+                    isEditorLoads  && (<LuFileBox className={`font-extrabold text-xl ${editorSideBar ? ' text-blue-200' : ' text-white'} `} onClick={() => {editorSideBar ? dispatch(setEditorSideBar(false)) : dispatch(setEditorSideBar(true)) }}/>)
                 }
                 {
-                    isDashboardLoads  && (<RxHamburgerMenu onClick={() => {
+                    isDashboardLoads  && (<RxHamburgerMenu className={`${dashBoardSideBar ? 'text-blue-200' : 'text-white'}`} onClick={() => {
                         dashBoardSideBar ? dispatch(setDashBoardSideBar(false)) : dispatch(setDashBoardSideBar(true)) ; 
                     }} />)
                 }

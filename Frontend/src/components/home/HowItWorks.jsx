@@ -4,8 +4,8 @@ import React from "react";
 const HowItWorks = () => {
     const steps = [
         {
-        title: "1. Create or Import a Project",
-        description: "Start from scratch or import an existing project folder directly from your system.",
+        title: "1. Create a Project",
+        description: "Start from scratch and collorate together with real-time Sync",
         },
         {
         title: "2. Invite Teammates via Room ID",
