@@ -1,28 +1,31 @@
-const nodemailer = require("nodemailer") ; 
-require("dotenv").config() ;
+    const nodemailer = require("nodemailer");
+    require("dotenv").config();
 
-const mailsender = async(email , title , body ) => {
-    try{
-        let transporter = nodemailer.createTransport({
-            host : process.env.MAIL_HOST , 
-            auth : {
-                user : process.env.MAIL_USER,
-                pass : process.env.MAIL_PASS,
-            }
-        })
+    const mailsender = async (email, title, body) => {
+    try {
 
-        let info = await transporter.sendMail({
-            from : 'Syncode || Sync + Code — for real-time collaboration',
-            to : `${email}` , 
-            subject : `${title}` ,
-            html : `${body}` 
-        })
+        const transporter = nodemailer.createTransport({
+        host: process.env.MAIL_HOST,
+        port: 587,           // REQUIRED
+        secure: false,      // TLS
+        auth: {
+            user: process.env.MAIL_USER,
+            pass: process.env.MAIL_PASS,
+        },
+        });
 
-        return info ; 
+        const info = await transporter.sendMail({
+        from: `"Syncode" <${process.env.MAIL_USER}>`,
+        to: email,
+        subject: title,
+        html: body,
+        });
+
+        return info;
     }
-    catch(err){ 
-        console.error(err) ; 
+    catch (err) {
+        console.error("Mail Error:", err);
     }
-}
+    };
 
-module.exports = mailsender ; 
+    module.exports = mailsender;
