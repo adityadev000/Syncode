@@ -38,9 +38,9 @@ const Navbar = () => {
             {/* Navigation Links */}
             <div className="hidden md:flex gap-6">
                 <Link to='/' className="hover:text-blue-400 transition">Home</Link>
-                <a href='#features' className="hover:text-blue-400 transition" >Features</a>
-                <a href='#howItWorks' className="hover:text-blue-400 transition">How It Works</a>
-                <a className="hover:text-blue-400 transition">Contact</a>
+                <Link to='/features' className="hover:text-blue-400 transition" >Features</Link>
+                <Link to='/howItWorks' className="hover:text-blue-400 transition">How It Works</Link>
+                <Link to='/Contacts' className="hover:text-blue-400 transition">Contact</Link>
             </div>
 
             {/* Call-to-Action */}

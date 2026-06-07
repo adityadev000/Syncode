@@ -16,6 +16,9 @@ import MyProjects from "./components/dashboard/MyProjects";
 import ProjectCollab from "./components/dashboard/ProjectCollab";
 import CodeEditorPage from "./pages/CodeEditorPage";
 import CodeEditor from "./components/Editor/CodeEditor";
+import FeatureSection from "./components/home/FeatureSection";
+import HowItWorks from "./components/home/HowItWorks";
+import Footer from "./components/home/Footer";
 
 function App() {
   return (
@@ -23,6 +26,9 @@ function App() {
       <Navbar/>
       <Routes>  
         <Route path="/" element={<Home/>} />
+        <Route path="/features" element={<FeatureSection/>} />
+        <Route path="/howItWorks" element={<HowItWorks/>} />
+        <Route path="/Contacts" element={<Footer/>} />
         <Route path="/login" element={<OpenRoute><Login/></OpenRoute>} />
         <Route path="/signup" element={<OpenRoute><Signup/></OpenRoute>} />
         <Route path="/verify-email" element={<OpenRoute><VerifyEmail/></OpenRoute>} />

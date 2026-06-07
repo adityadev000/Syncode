@@ -9,7 +9,7 @@ const HeroSection = () => {
 
 
     return (
-        <section className="bg-gray-900 text-white  flex flex-col items-center justify-center ">
+        <section id='home' className="bg-gray-900 text-white  flex flex-col items-center justify-center ">
             <img src={logo}  className='h-40'/>
             <h1 className="text-4xl md:text-6xl font-bold text-center mb-4">
                 Build Code Together. Live.
